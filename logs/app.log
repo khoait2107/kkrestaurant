@@ -1,0 +1,18 @@
+2026-08-17 14:22:19,870 INFO Database backup created: D:\BELUYEN\kkrestaurant_v2.15_excel_import\kkrestaurant\backups\kk_2026-08-17_14-22-19.db
+2026-08-17 14:22:19,894 INFO Database backup created: D:\BELUYEN\kkrestaurant_v2.15_excel_import\kkrestaurant\backups\kk_2026-08-17_14-22-19.db
+2026-08-17 14:23:23,250 INFO Database backup created: D:\BELUYEN\kkrestaurant_v2.15_excel_import\kkrestaurant\backups\kk_2026-08-17_14-23-23.db
+2026-08-17 14:23:23,262 INFO Database backup created: D:\BELUYEN\kkrestaurant_v2.15_excel_import\kkrestaurant\backups\kk_2026-08-17_14-23-23.db
+2026-08-17 16:14:04,217 INFO Database backup created: D:\BELUYEN\kkrestaurant_v2.15_excel_import\kkrestaurant\backups\kk_2026-08-17_16-14-04.db
+2026-08-17 16:14:04,226 INFO Database backup created: D:\BELUYEN\kkrestaurant_v2.15_excel_import\kkrestaurant\backups\kk_2026-08-17_16-14-04.db
+2026-08-17 16:28:03,002 INFO Database backup created: D:\BELUYEN\kkrestaurant_v2.15_excel_import\kkrestaurant\backups\kk_2026-08-17_16-28-02.db
+2026-08-17 16:28:03,005 ERROR Menu Excel import failed
+Traceback (most recent call last):
+  File "D:\BELUYEN\kkrestaurant_v2.15_excel_import\kkrestaurant\app.py", line 1359, in menu_import_commit
+    raise ValueError("Import tạo ra hơn 8 món nổi bật. Hãy giảm Featured=Yes xuống tối đa 8 món rồi thử lại.")
+ValueError: Import tạo ra hơn 8 món nổi bật. Hãy giảm Featured=Yes xuống tối đa 8 món rồi thử lại.
+2026-08-17 16:28:50,951 INFO Database backup created: D:\BELUYEN\kkrestaurant_v2.15_excel_import\kkrestaurant\backups\kk_2026-08-17_16-28-50.db
+2026-08-17 16:30:05,179 INFO Database backup created: D:\BELUYEN\kkrestaurant\backups\kk_2026-08-17_16-30-05.db
+2026-08-17 16:30:05,189 INFO Database backup created: D:\BELUYEN\kkrestaurant\backups\kk_2026-08-17_16-30-05.db
+2026-08-17 17:04:39,572 INFO Database backup created: D:\BELUYEN\kkrestaurant\backups\kk_2026-08-17_17-04-39.db
+2026-08-18 09:19:21,120 INFO Database backup created: D:\BELUYEN\kkrestaurant\backups\kk_2026-08-18_09-19-21.db
+2026-08-18 09:19:21,130 INFO Database backup created: D:\BELUYEN\kkrestaurant\backups\kk_2026-08-18_09-19-21.db

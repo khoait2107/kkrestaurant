@@ -1,0 +1,5 @@
+{% extends "base.html" %}
+{% block title %}Thanh toán online | K&K{% endblock %}
+{% block content %}
+<section class="payment-demo"><div class="payment-card"><div class="brand-main">K<span>&</span>K</div><p class="eyebrow">DEMO PAYMENT</p><h1>Thanh toán online</h1><p>Đơn hàng <strong>#{{ order_id }}</strong> đã được tạo.</p><div class="fake-qr">QR</div><p class="muted">Đây là màn hình mô phỏng. Khi triển khai thật, thay endpoint này bằng cổng thanh toán phù hợp tại Mỹ (ví dụ Stripe).</p><a class="btn btn-primary" href="/">Quay về trang chủ</a></div></section>
+{% endblock %}

@@ -1,0 +1,53 @@
+{% extends "base.html" %}{% block title %}Đặt hàng | K&K{% endblock %}{% block content %}
+<section class="pagehero small"><div class="container"><div class="eyebrow">CHECKOUT</div><h1>Đặt hàng</h1></div></section><section class="section"><div class="container checkout">{% if not online_order_enabled %}<div class="panel" style="grid-column:1/-1;text-align:center;padding:42px 24px"><div class="eyebrow">ONLINE ORDER</div><h2>Đặt món trực tuyến đang tạm ngưng</h2><p class="muted" style="max-width:620px;margin:10px auto 22px;line-height:1.6">K&K hiện đang tạm ngưng các tính năng trực tuyến. Quý khách vui lòng liên hệ K&K để được hỗ trợ hoặc tiếp tục xem thực đơn.</p><div class="actions" style="justify-content:center"><a class="btn red" href="/menu">Xem thực đơn</a><a class="btn outline" href="tel:+1{{s.phone|replace('.','')}}">☎ {{s.phone}}</a></div></div>{% else %}<form id="form" class="panel"><h2>Thông tin nhận hàng</h2><label>Họ tên *<input name="customer_name" required></label><label>Số điện thoại *<input name="phone" required type="tel"></label><label>Địa chỉ *<textarea name="address" required rows="3"></textarea></label><label>Ghi chú<textarea name="note" rows="2"></textarea></label><h2>Thanh toán</h2><label class="radio"><input type="radio" name="payment_method" value="cod" checked> COD – thanh toán khi nhận</label><label class="radio"><input type="radio" name="payment_method" value="online"> Thanh toán online qua VNPAY</label><div id="msg"></div></form><aside class="panel checkout-summary"><h2>Đơn hàng</h2><div id="co-items"></div><div class="voucher"><input id="vcode" placeholder="Mã voucher"><button type="button" onclick="voucher()">Áp dụng</button></div><p id="vmsg"></p><div class="totals"><div><span>Tạm tính</span><b id="sub">$0.00</b></div><div><span>Giảm</span><b id="disc">$0.00</b></div><div class="grand"><span>Tổng</span><b id="total">$0.00</b></div></div><button type="submit" form="form" class="btn red full checkout-submit">Xác nhận đặt hàng</button></aside></div></section>
+<script>let disc=0,vcode='';
+function checkoutCart(){
+  try{return typeof getCart==='function'?getCart():JSON.parse(localStorage.getItem('kk_cart')||'[]')}catch(e){return []}
+}
+function checkoutTotal(c){return c.reduce((s,x)=>s+(Number(x.price)||0)*(Number(x.qty)||0),0)}
+function render(){
+  const c=checkoutCart(), box=document.getElementById('co-items');
+  if(!box)return;
+  box.innerHTML=c.length?c.map(x=>`<div class="line"><span>${escapeHtml(x.name)} × ${Number(x.qty)||0}</span><b>${fmt((Number(x.price)||0)*(Number(x.qty)||0))}</b></div>`).join(''):'<p>Giỏ hàng trống.</p>';
+  const sub=checkoutTotal(c);
+  document.getElementById('sub').textContent=fmt(sub);
+  document.getElementById('disc').textContent=fmt(Number(disc)||0);
+  document.getElementById('total').textContent=fmt(Math.max(0,sub-(Number(disc)||0)));
+}
+async function voucher(){
+  const sub=checkoutTotal(checkoutCart()), code=(document.getElementById('vcode').value||'').trim();
+  if(!code){disc=0;vcode='';document.getElementById('vmsg').textContent='Vui lòng nhập mã voucher.';render();return}
+  try{
+    const r=await fetch('/api/voucher',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code,subtotal:sub})});
+    const d=await r.json(); disc=d.ok?Number(d.discount)||0:0; vcode=d.ok?code.toUpperCase():'';
+    document.getElementById('vmsg').textContent=d.message||''; render();
+  }catch(e){disc=0;vcode='';document.getElementById('vmsg').textContent='Không thể kiểm tra voucher. Vui lòng thử lại.';render()}
+}
+function initCheckout(){
+  const form=document.getElementById('form');
+  if(!form)return;
+  let orderIdempotencyKey=window.crypto?.randomUUID ? crypto.randomUUID() : ('kk-'+Date.now()+'-'+Math.random().toString(36).slice(2));
+  form.addEventListener('input',()=>{
+    // A meaningful change starts a new checkout attempt.
+    orderIdempotencyKey=window.crypto?.randomUUID ? crypto.randomUUID() : ('kk-'+Date.now()+'-'+Math.random().toString(36).slice(2));
+  });
+  form.onsubmit=async e=>{
+    e.preventDefault();
+    const c=checkoutCart();
+    if(!c.length){showToast('Bạn chưa có món nào trong giỏ hàng.','info','Giỏ hàng đang trống');return}
+    const f=new FormData(e.target), sub=checkoutTotal(c);
+    const body={customer_name:f.get('customer_name'),phone:f.get('phone'),address:f.get('address'),note:f.get('note'),payment_method:f.get('payment_method'),items:c,subtotal:sub,discount:Number(disc)||0,voucher:vcode,idempotency_key:orderIdempotencyKey};
+    const submit=document.querySelector('button[type="submit"][form="form"]') || e.target.querySelector('button[type="submit"]') || e.target.querySelector('button.btn.red');
+    if(submit)submit.disabled=true;
+    try{
+      const r=await fetch('/api/orders',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+      const d=await r.json();
+      if(d.ok){localStorage.removeItem('kk_cart');if(d.payment_url)location.href=d.payment_url;else{document.getElementById('msg').innerHTML=`Đặt hàng thành công. Mã đơn: <strong>${escapeHtml(d.order_code)}</strong>. <a href="/track">Theo dõi đơn →</a>`;render();if(typeof updateCartCount==='function')updateCartCount();}}
+      else{document.getElementById('msg').textContent=d.message||'Không thể tạo đơn.';showToast(d.message||'Không thể tạo đơn.','error','Đặt hàng thất bại')}
+    }catch(err){document.getElementById('msg').textContent='Không thể kết nối máy chủ. Vui lòng thử lại.';showToast('Không thể kết nối máy chủ. Vui lòng thử lại.','error','Lỗi kết nối')}
+    finally{if(submit)submit.disabled=false}
+  };
+  render();
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initCheckout);else initCheckout();
+</script>{% endif %}{% endblock %}

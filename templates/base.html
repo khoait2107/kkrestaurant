@@ -1,0 +1,59 @@
+<!doctype html><html lang="vi"><head><meta charset="utf-8"><meta name="csrf-token" content="{{ admin_csrf_token if admin_csrf_token else '' }}">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{% block title %}{{s.restaurant_name}} | {{s.tagline}}{% endblock %}</title>
+<meta name="description" content="{% block description %}Phở, bánh mì, bún, cơm và món chay Việt Nam tại {{s.restaurant_name}}. Xem thực đơn và tìm địa điểm K&K.{% endblock %}">
+<meta name="robots" content="index,follow"><link rel="canonical" href="{{request.url}}">
+<meta property="og:title" content="{{s.restaurant_name}}"><meta property="og:description" content="{{s.tagline}}"><meta property="og:image" content="{{request.url_root.rstrip('/')}}{{s.hero_image or '/static/menu-board.png'}}">
+<link rel="stylesheet" href="{{url_for('static',filename='style.css')}}">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Restaurant","name":{{s.restaurant_name|tojson}},"servesCuisine":"Vietnamese","telephone":{{s.phone|tojson}},"address":{"@type":"PostalAddress","streetAddress":{{s.address|tojson}}},"menu":{{(request.url_root.rstrip('/') + '/menu')|tojson}},"image":{{(request.url_root.rstrip('/') + (s.hero_image or '/static/menu-board.png'))|tojson}}}</script>
+{% block schema %}{% endblock %}</head>
+<body>
+<header class="header"><div class="nav"><a href="/" class="logo">
+        {% if s.logo_image %}
+            <img src="{{ s.logo_image }}"
+                 alt="{{ s.restaurant_name }}"
+                 class="site-logo-image">
+        {% endif %}
+
+        <b>K<span>&</span>K</b>
+        <small>PHỞ & BÁNH MÌ</small>
+    </a>
+<nav><a href="/">Trang chủ</a><a href="/menu">Thực đơn</a><a href="/#locations">Địa điểm</a>{% if online_order_enabled %}<a href="/book">Đặt bàn</a><a href="/track">Theo dõi đơn</a>{% endif %}</nav>
+<div class="nav-right"><a class="hotline" href="tel:+1{{s.phone|replace('.','')}}">☎ {{s.phone}}</a>{% if online_order_enabled %}<a class="cart" href="#" onclick="openCart();return false">🛒 <i id="cart-count">0</i></a>{% endif %}<button class="hamb" onclick="document.querySelector('nav').classList.toggle('show')">☰</button></div></div></header>
+<main>{% block content %}{% endblock %}</main>
+<footer><div class="container foot-grid"><div>{% if s.logo_image %}<img src="{{s.logo_image}}" alt="{{s.restaurant_name}}" class="site-footer-logo">{% else %}<div class="foot-logo">K&K</div>{% endif %}<p>{{s.tagline}}</p></div><div><h3>Liên hệ</h3><p>☎ <a href="tel:+1{{s.phone|replace('.','')}}">{{s.phone}}</a></p><p>{{s.address}}</p><a class="map-link" href="{{s.maps_url}}" target="_blank">📍 Xem Google Maps</a></div><div><h3>{{ 'Đặt món' if online_order_enabled else 'Thực đơn' }}</h3><a class="btn red" href="/menu">Xem thực đơn</a></div></div><div class="copy">© 2026 {{s.restaurant_name}}</div></footer>
+{% if online_order_enabled %}<div id="backdrop" class="backdrop" onclick="closeCart()"></div><aside id="drawer" class="drawer"><div class="drawer-title"><h2>Giỏ hàng</h2><button onclick="closeCart()">×</button></div><div id="cart-items"></div><div class="drawer-bottom"><div><span>Tạm tính: </span><strong id="cart-subtotal">$0.00</strong></div><a class="btn red full" href="/checkout">Tiến hành đặt hàng</a></div></aside>{% endif %}
+<div id="kk-toast" class="kk-toast" role="status" aria-live="polite" aria-atomic="true">
+  <div class="kk-toast-icon" id="kk-toast-icon">✓</div>
+  <div class="kk-toast-content"><strong id="kk-toast-title">Thông báo</strong><span id="kk-toast-message"></span></div>
+  <button type="button" class="kk-toast-close" onclick="hideToast()" aria-label="Đóng">×</button>
+</div>
+<div id="kk-confirm" class="kk-confirm" aria-hidden="true">
+  <div class="kk-confirm-card" role="dialog" aria-modal="true" aria-labelledby="kk-confirm-title">
+    <div class="kk-confirm-icon">?</div><div class="kk-confirm-content"><h3 id="kk-confirm-title">Xác nhận thao tác</h3><p id="kk-confirm-message"></p></div>
+    <div class="kk-confirm-actions"><button type="button" class="btn outline" onclick="closeConfirm(false)">Hủy</button><button type="button" class="btn red" id="kk-confirm-ok">Xác nhận</button></div>
+  </div>
+</div>
+<script>
+(function(){
+  let toastTimer=null, confirmResolver=null;
+  window.showToast=function(message,type='success',title){
+    const box=document.getElementById('kk-toast'); if(!box)return;
+    const icon=document.getElementById('kk-toast-icon'), ttl=document.getElementById('kk-toast-title'), msg=document.getElementById('kk-toast-message');
+    const map={success:['✓',title||'Thành công'],error:['!',title||'Có lỗi xảy ra'],warning:['!',title||'Lưu ý'],info:['i',title||'Thông tin']};
+    const x=map[type]||map.info; box.className='kk-toast '+type; icon.textContent=x[0]; ttl.textContent=x[1]; msg.textContent=message||'';
+    requestAnimationFrame(()=>box.classList.add('show')); clearTimeout(toastTimer); toastTimer=setTimeout(hideToast,4200);
+  };
+  window.hideToast=function(){const box=document.getElementById('kk-toast');if(box)box.classList.remove('show');clearTimeout(toastTimer)};
+  window.showConfirm=function(message,title='Xác nhận thao tác'){
+    const box=document.getElementById('kk-confirm'); if(!box)return Promise.resolve(window.confirm(message));
+    document.getElementById('kk-confirm-title').textContent=title; document.getElementById('kk-confirm-message').textContent=message;
+    box.classList.add('show'); box.setAttribute('aria-hidden','false');
+    return new Promise(resolve=>{confirmResolver=resolve;});
+  };
+  window.closeConfirm=function(ok){const box=document.getElementById('kk-confirm');if(box){box.classList.remove('show');box.setAttribute('aria-hidden','true')}if(confirmResolver){const r=confirmResolver;confirmResolver=null;r(!!ok)}};
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'){hideToast();const box=document.getElementById('kk-confirm');if(box&&box.classList.contains('show'))closeConfirm(false)}});
+  document.addEventListener('DOMContentLoaded',()=>{document.getElementById('kk-confirm-ok')?.addEventListener('click',()=>closeConfirm(true));document.getElementById('kk-confirm')?.addEventListener('click',e=>{if(e.target.id==='kk-confirm')closeConfirm(false)})});
+})();
+</script>
+<script>window.MENU={{menu|default([])|tojson}};</script><script src="{{url_for('static',filename='app.js')}}"></script></body></html>

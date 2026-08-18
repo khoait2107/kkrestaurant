@@ -1,0 +1,255 @@
+<div id="adminContent"><section class="pagehero small"><div class="container adminhead"><div><div class="eyebrow">ADMIN DASHBOARD</div><h1>Quản trị K&K</h1></div><a href="/admin/logout" class="btn light">Đăng xuất</a></div></section>
+<section class="section admin-shell-section"><div class="container">
+<input type="hidden" id="adminCsrfToken" name="_csrf" value="{{ admin_csrf_token }}">
+<div class="admin-layout">
+<aside class="admin-sidebar" id="adminSidebar" aria-label="Menu quản trị">
+  <div class="admin-sidebar-head">
+    <div><span class="eyebrow">QUẢN TRỊ</span><strong>K&K Restaurant</strong></div>
+    <button type="button" class="admin-sidebar-close" aria-label="Đóng menu">×</button>
+  </div>
+  <nav class="admin-nav">
+    <a href="#overview" data-admin-nav><span class="nav-icon">⌂</span><span>Tổng quan</span></a>
+    <a href="#orders" data-admin-nav><span class="nav-icon">▣</span><span>Đơn hàng</span><b>{{orders|length}}</b></a>
+    <a href="#bookings" data-admin-nav><span class="nav-icon">◷</span><span>Đặt bàn</span><b>{{bookings|length}}</b></a>
+    <div class="admin-nav-group-label">THỰC ĐƠN</div>
+    <a href="#menu" data-admin-nav><span class="nav-icon">☷</span><span>Quản lý món ăn</span></a>
+    <a href="#featured" data-admin-nav><span class="nav-icon">★</span><span>Món nổi bật</span><b>{{featured_items|length}}</b></a>
+    <a href="#categories" data-admin-nav><span class="nav-icon">▤</span><span>Danh mục</span><b>{{cats|length}}</b></a>
+    <div class="admin-nav-group-label">KHUYẾN MÃI</div>
+    <a href="#voucher" data-admin-nav><span class="nav-icon">%</span><span>Voucher</span><b>{{vouchers|length}}</b></a>
+    <div class="admin-nav-group-label">HỆ THỐNG</div>
+    <a href="#settings" data-admin-nav><span class="nav-icon">⚙</span><span>Cài đặt nhà hàng</span></a>
+    <a href="#security" data-admin-nav><span class="nav-icon">🔐</span><span>Bảo mật quản trị</span></a>
+    <a href="#audit" data-admin-nav><span class="nav-icon">📋</span><span>Nhật ký quản trị</span></a>
+  </nav>
+  <div class="admin-sidebar-foot"><span class="sidebar-dot"></span><span>Hệ thống đang hoạt động</span></div>
+</aside>
+<div class="admin-sidebar-overlay" id="adminSidebarOverlay"></div>
+<main class="admin-main">
+<div class="admin-mobile-toolbar admin-mobile-global-toolbar">
+  <a href="/admin" class="btn outline admin-home-link">← Trang quản trị</a>
+  <button type="button" class="btn outline admin-menu-toggle">☰ Menu quản trị</button>
+</div>
+<div id="overview" class="admin-overview-anchor">
+<div class="stats"><div><span>Đơn hàng</span><b>{{orders|length}}</b></div><div><span>Đặt bàn</span><b>{{bookings|length}}</b></div><div><span>Món đang bán</span><b>{{items|selectattr('active','equalto',1)|list|length}}</b></div></div>
+</div>
+<section id="orders" class="admin-section"><h2>Đơn hàng</h2><div class="tablewrap"><table><tr><th>Mã</th><th>Khách</th><th>Tổng</th><th>Thanh toán</th><th>Trạng thái</th><th>Ngày</th></tr>
+{% for o in orders %}<tr><td><b>{{o.order_code}}</b></td><td>{{o.customer_name}}<br>{{o.phone}}</td><td>{{o.total|money}}</td><td>{{o.payment_status}}</td><td><select data-status-url="/admin/order/{{o.id}}/status">{% for st in ['Mới','Đã thanh toán','Đang chuẩn bị','Đang giao','Hoàn tất','Đã hủy'] %}<option {% if o.status==st %}selected{% endif %}>{{st}}</option>{% endfor %}</select></td><td>{{o.created_at}}</td></tr>{% endfor %}
+</table></div></section>
+
+<section id="bookings" class="admin-section"><h2>Đặt bàn</h2><div class="tablewrap"><table><tr><th>Khách</th><th>Ngày/Giờ</th><th>Số khách</th><th>Ghi chú</th><th>Trạng thái</th></tr>
+{% for b in bookings %}<tr><td>{{b.name}}<br>{{b.phone}}</td><td>{{b.booking_date}} {{b.booking_time}}</td><td>{{b.guests}}</td><td>{{b.note}}</td><td><select data-status-url="/admin/booking/{{b.id}}/status">{% for st in ['Mới','Đã xác nhận','Hoàn tất','Đã hủy'] %}<option {% if b.status==st %}selected{% endif %}>{{st}}</option>{% endfor %}</select></td></tr>{% endfor %}
+</table></div></section>
+
+<section id="menu" class="admin-section"><div class="section-title-row"><div><h2>Quản lý món ăn</h2><p class="muted">Thêm, sửa, xóa món; thay đổi giá, danh mục, ảnh, badge và trạng thái bán.</p></div><div class="menu-head-actions"><button class="btn outline" type="button" onclick="openMenuImport()">📥 Import Excel</button><a class="btn outline" href="/admin/menu/import-template" data-ajax="false">📄 Tải mẫu Excel</a><button class="btn green" onclick="openAddDish()">＋ Thêm món mới</button></div></div>
+<div class="menu-tools"><input id="dishSearch" placeholder="⌕ Tìm tên món..."><select id="dishCat"><option value="all">Tất cả danh mục</option>{% for k,l in categories %}{% if k!='all' %}<option value="{{k}}">{{l}}</option>{% endif %}{% endfor %}</select><button type="button" class="btn outline category-toggle-all" onclick="toggleAllCategories()">⌄ Mở/thu gọn</button></div>
+<div class="dish-category-list" id="dishGrid">
+{% for group in category_groups %}
+<div class="dish-category-group" data-category="{{group.id}}">
+  <button type="button" class="category-badge" aria-expanded="false" onclick="toggleDishCategory(this)">
+    <span class="category-badge-main"><span class="category-chevron">›</span><strong>{{group.name}}</strong></span>
+    <span class="category-badge-count">{{group["items"]|length}} món</span>
+  </button>
+  <div class="category-dish-grid" hidden>
+  {% for x in group["items"] %}
+  <article class="dish-admin-card" data-name="{{x.name|lower}}" data-cat="{{x.category}}"><div class="dish-admin-image"><img src="{{x.image}}" alt="{{x.name}}"><span class="status {{'on' if x.active else 'off'}}">{{'Đang bán' if x.active else 'Tạm ẩn'}}</span></div><div class="dish-admin-body"><div class="dish-top"><h3>{{x.name}}</h3><b>{{x.price|money}}</b></div><p>{{x.description}}</p><div class="dish-meta">{{category_names.get(x.category, x.category)}}{% if x.badge %} · {{x.badge}}{% endif %}</div><div class="dish-actions"><button class="btn outline" onclick='editDish({{x|tojson}})'>✎ Sửa</button><form method="post" action="/admin/menu/delete/{{x.id}}" data-confirm="Xóa món “{{x.name}}”? Món sẽ không còn hiển thị trên website." data-confirm-title="Xác nhận xóa món"><button class="btn danger">🗑 Xóa</button></form></div></div></article>
+  {% endfor %}
+  </div>
+</div>
+{% endfor %}
+</div>
+</section>
+<div id="menuImportModal" class="modal"><div class="modal-card menu-import-card"><div class="modal-head"><div><h2>📥 Import Menu từ Excel</h2><p class="muted">Chỉ hỗ trợ .xlsx · Tối đa 500 món/lần. Hệ thống sẽ kiểm tra trước khi ghi database.</p></div><button type="button" onclick="closeMenuImport()">×</button></div><form id="menuImportForm" enctype="multipart/form-data"><label>File Excel (.xlsx)<input type="file" name="excel_file" id="menuImportFile" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" required></label><div class="import-drop-note">💡 Bạn có thể dùng <a href="/admin/menu/import-template" data-ajax="false">mẫu Excel K&K</a>. Category có thể nhập ID hoặc tên danh mục hiện có.</div><div id="menuImportResult" class="import-result" hidden></div><div id="menuImportPreview" class="import-preview" hidden></div><div class="modal-actions"><button type="button" class="btn outline" onclick="closeMenuImport()">Hủy</button><button type="submit" class="btn green" id="menuImportCheckBtn">Kiểm tra file</button><button type="button" class="btn red" id="menuImportCommitBtn" onclick="commitMenuImport()" hidden>✓ Xác nhận Import</button></div></form></div></div>
+<div id="dishModal" class="modal"><div class="modal-card"><div class="modal-head"><h2 id="modalTitle">Thêm món mới</h2><button onclick="closeDish()">×</button></div><form id="dishForm" method="post" action="/admin/menu/add" enctype="multipart/form-data" data-refresh-hash="#menu"><input type="hidden" name="id" id="dishId"><input type="hidden" name="old_image" id="oldImage"><input type="hidden" name="sort_order" id="dishSortOrder" value="0"><div class="dish-form-grid"><div><label>Tên món *<input name="name" id="dishName" required></label><label>Danh mục *<select name="category" id="dishCategory" required>{% for k,l in categories %}{% if k!='all' %}<option value="{{k}}">{{l}}</option>{% endif %}{% endfor %}</select></label><label>Giá (USD) *<input name="price" id="dishPrice" type="number" min="0" step="0.01" inputmode="decimal" required placeholder="9.90"></label><label>Badge<input name="badge" id="dishBadge" placeholder="Bán chạy / Signature"></label></div><div><label>Mô tả<textarea name="description" id="dishDesc" rows="5"></textarea></label><label>Ảnh món<input type="file" name="image" accept="image/*"><small class="muted image-size-note">JPG, JPEG, PNG hoặc WEBP. <strong>Kích thước khuyến nghị: 800 × 800 px</strong> (tỷ lệ 1:1) để ảnh món hiển thị đẹp và đồng đều.</small></label><label class="check"><input type="checkbox" name="active" id="dishActive" checked> Đang bán</label><label class="check"><input type="checkbox" name="featured" id="dishFeatured"> ⭐ Món nổi bật</label><div id="currentImage" class="current-image"></div></div></div><div class="modal-actions"><button type="button" class="btn outline" onclick="closeDish()">Hủy</button><button class="btn red">Lưu món</button></div></form></div></div>
+
+
+<section id="featured" class="admin-section">
+  <div class="section-title-row">
+    <div><h2>⭐ Món nổi bật & thứ tự</h2><p class="muted">Bật “Nổi bật” cho món muốn đưa lên trang chủ. Kéo thả để sắp xếp thứ tự hiển thị; thứ tự này cũng được dùng cho menu.</p></div>
+    <button class="btn green" type="button" onclick="saveMenuOrder()">✓ Lưu thứ tự</button>
+  </div>
+  <div class="featured-toolbar"><span id="orderSaveState" class="muted">Kéo thả các món để sắp xếp.</span><span class="featured-count"><b id="featuredCount">0</b> món nổi bật</span></div>
+  <div id="featuredSortList" class="featured-sort-list">
+  {% for x in featured_items %}
+    <article class="featured-sort-item {% if x.featured %}is-featured{% endif %}" draggable="true" data-id="{{x.id}}">
+      <span class="drag-handle" title="Kéo để sắp xếp">☷</span>
+      <img src="{{x.image}}" alt="{{x.name}}">
+      <div class="featured-sort-info"><b>{{x.name}}</b><small>{{x.price|money}} · {{category_names.get(x.category,x.category)}}</small></div>
+      <label class="featured-check"><input type="checkbox" {% if x.featured %}checked{% endif %} onchange="toggleFeatured(this)"> ⭐ Nổi bật</label>
+    </article>
+  {% endfor %}
+  </div>
+</section>
+<section id="categories" class="admin-section">
+<div class="section-title-row"><div><h2>Quản lý danh mục</h2><p class="muted">Tạo, đổi tên, ẩn/hiện và sắp xếp danh mục. Danh mục chỉ được xóa khi không còn món.</p></div></div>
+<form class="inlineform category-add" method="post" action="/admin/category/add" data-refresh-hash="#categories">
+<input name="name" placeholder="Tên danh mục mới, ví dụ: Đồ uống" required>
+<button class="btn green">＋ Thêm danh mục</button>
+</form>
+<div class="category-list">
+<div class="category-row category-header"><b>Danh mục</b><b>Thứ tự</b><b>Trạng thái</b><span></span><span></span><b>Sửa</b><b>Ẩn/hiện</b><b>Xóa</b></div>
+{% for c in cats %}
+<div class="category-row">
+<form method="post" action="/admin/category/save" class="cat-edit-form">
+<input type="hidden" name="id" value="{{c.id}}"><input name="name" value="{{c.name}}" aria-label="Tên danh mục {{c.name}}">
+</form>
+<span class="cat-order">#{{loop.index}}</span>
+<span class="cat-status {{'on' if c.active else 'off'}}">{{'● Đang hiện' if c.active else '○ Đang ẩn'}}</span>
+<form method="post" action="/admin/category/move/{{c.id}}/up"><button class="mini" title="Đưa lên">↑</button></form>
+<form method="post" action="/admin/category/move/{{c.id}}/down"><button class="mini" title="Đưa xuống">↓</button></form>
+<button class="mini green-text" onclick="this.closest('.category-row').querySelector('.cat-edit-form').requestSubmit();return false;">💾 Lưu</button>
+<form method="post" action="/admin/category/toggle/{{c.id}}"><button class="mini" title="Ẩn/hiện">{{'Ẩn' if c.active else 'Hiện'}}</button></form>
+{% set used = items|selectattr('category','equalto',c.id)|list|length %}
+<button class="mini danger-btn" onclick="return deleteCat('{{c.id}}',{{used}})">🗑</button>
+</div>
+{% endfor %}
+</div>
+</section>
+<section id="voucher" class="admin-section">
+<div class="section-title-row">
+  <div><h2>Quản lý Voucher</h2><p class="muted">Thêm, sửa, xóa voucher và đặt thời gian áp dụng. Giá trị tiền tệ dùng USD. Ngày bắt đầu/kết thúc được tính bao gồm cả ngày đó.</p></div>
+  <button class="btn green" type="button" onclick="openVoucher()">＋ Thêm voucher</button>
+</div>
+<div class="tablewrap"><table class="voucher-table">
+<tr><th>Mã</th><th>Loại</th><th>Giá trị</th><th>Đơn tối thiểu</th><th>Ngày áp dụng</th><th>Ngày kết thúc</th><th>Trạng thái</th><th>Thao tác</th></tr>
+{% for v in vouchers %}
+<tr>
+<td><b>{{v.code}}</b></td>
+<td>{{'%' if v.type=='percent' else 'Giảm tiền'}}</td>
+<td>{% if v.type=='percent' %}{{v.value}}%{% else %}{{v.value|money}}{% endif %}</td>
+<td>{{(v.min_order or 0)|money}}</td>
+<td>{{v.start_date or 'Không giới hạn'}}</td>
+<td>{{v.end_date or 'Không giới hạn'}}</td>
+<td><span class="status {{'on' if v.active else 'off'}}">{{'Đang bật' if v.active else 'Đang tắt'}}</span></td>
+<td class="voucher-actions">
+<button class="mini" type="button" onclick='editVoucher({{v|tojson}})'>✎ Sửa</button>
+<form method="post" action="/admin/voucher/toggle/{{v.code}}"><button class="mini" type="submit">{{'Tắt' if v.active else 'Bật'}}</button></form>
+<form method="post" action="/admin/voucher/delete/{{v.code}}" data-confirm="Xóa voucher {{v.code}}? Thao tác này không thể hoàn tác." data-confirm-title="Xác nhận xóa voucher"><button class="mini danger-btn" type="submit">🗑 Xóa</button></form>
+</td>
+</tr>
+{% else %}<tr><td colspan="8" class="muted">Chưa có voucher.</td></tr>{% endfor %}
+</table></div>
+</section>
+<div id="voucherModal" class="modal"><div class="modal-card voucher-modal-card">
+<div class="modal-head"><h2 id="voucherModalTitle">Thêm voucher</h2><button type="button" onclick="closeVoucher()">×</button></div>
+<form method="post" action="/admin/voucher" data-refresh-hash="#voucher">
+<input type="hidden" name="old_code" id="voucherOldCode">
+<div class="voucher-form-grid">
+<label>Mã voucher *<input name="code" id="voucherCode" required maxlength="40" placeholder="WELCOME20"></label>
+<label>Loại *<select name="type" id="voucherType"><option value="percent">Giảm theo %</option><option value="fixed">Giảm số tiền</option></select></label>
+<label>Giá trị *<input name="value" id="voucherValue" type="number" min="0" step="0.01" inputmode="decimal" required></label>
+<label>Đơn tối thiểu (USD)<input name="min_order" id="voucherMinOrder" type="number" min="0" step="0.01" inputmode="decimal" value="0"></label>
+<label>Ngày áp dụng<input name="start_date" id="voucherStart" type="date"></label>
+<label>Ngày kết thúc<input name="end_date" id="voucherEnd" type="date"></label>
+</div>
+<div class="modal-actions"><button type="button" class="btn outline" onclick="closeVoucher()">Hủy</button><button class="btn red">Lưu voucher</button></div>
+</form></div></div>
+
+<section id="security" class="admin-section">
+  <div class="section-title-row">
+    <div><h2>🔐 Bảo mật quản trị</h2><p class="muted">Đổi tên đăng nhập và mật khẩu ngay trong Admin. Không cần sửa file .env sau lần thiết lập đầu tiên.</p></div>
+  </div>
+  <div class="panel" style="max-width:720px">
+    <form id="adminSecurityForm" method="post" action="/admin/security/update" data-ajax="true" data-refresh-hash="#security">
+      <input type="hidden" name="_csrf" value="{{admin_csrf_token}}">
+      <div class="dish-form-grid">
+        <div>
+          <label>Tên đăng nhập
+            <input name="username" value="{{admin_account['username'] if admin_account else 'admin'}}" minlength="3" maxlength="50" autocomplete="username" required>
+          </label>
+          <label>Mật khẩu hiện tại
+            <div class="password-field"><input id="adminCurrentPassword" name="current_password" type="password" autocomplete="current-password" required><button type="button" class="btn outline password-toggle" data-password-toggle="adminCurrentPassword">👁</button></div>
+          </label>
+        </div>
+        <div>
+          <label>Mật khẩu mới
+            <div class="password-field"><input id="adminNewPassword" name="new_password" type="password" minlength="12" autocomplete="new-password" required><button type="button" class="btn outline password-toggle" data-password-toggle="adminNewPassword">👁</button></div>
+          </label>
+          <label>Xác nhận mật khẩu mới
+            <div class="password-field"><input id="adminConfirmPassword" name="confirm_password" type="password" minlength="12" autocomplete="new-password" required><button type="button" class="btn outline password-toggle" data-password-toggle="adminConfirmPassword">👁</button></div>
+          </label>
+        </div>
+      </div>
+      <p class="muted">Mật khẩu phải có ít nhất <strong>12 ký tự</strong>, gồm chữ, số và ký tự đặc biệt.</p>
+      <button type="submit" class="btn green">🔐 Lưu thay đổi bảo mật</button>
+    </form>
+    <hr style="margin:24px 0;border:0;border-top:1px solid #eee">
+    <button type="button" class="btn outline" id="logoutOtherAdminSessions">🚪 Đăng xuất các phiên khác</button>
+    <p class="muted">Thao tác này vô hiệu hóa các phiên Admin đang đăng nhập trên thiết bị/trình duyệt khác.</p>
+  </div>
+</section>
+<section id="audit" class="admin-section">
+  <div class="section-title-row">
+    <div><h2>📋 Nhật ký quản trị</h2><p class="muted">Theo dõi các thao tác quan trọng của tài khoản Admin.</p></div>
+    <button type="button" class="btn outline" id="refreshAuditLog">↻ Tải nhật ký</button>
+  </div>
+  <div class="panel">
+    <div id="auditHealth" class="muted">Đang kiểm tra hệ thống…</div>
+    <div style="overflow:auto;margin-top:14px">
+      <table class="admin-table" id="auditLogTable">
+        <thead><tr><th>Thời gian</th><th>Admin</th><th>Hành động</th><th>Đối tượng</th><th>Chi tiết</th></tr></thead>
+        <tbody><tr><td colspan="5" class="muted">Chưa tải nhật ký.</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+<section id="settings" class="admin-section">
+<div class="admin-section-heading"><div><h2>Cài đặt nhà hàng</h2><p class="muted">Thông tin nhà hàng, nội dung Hero và hình banner hiển thị ngoài trang chủ.</p></div></div>
+<form class="settings settings-panel" method="post" action="/admin/settings" enctype="multipart/form-data" data-refresh-hash="#settings">
+<div class="settings-grid">
+{% for k,label in [('restaurant_name','Tên nhà hàng'),('tagline','Tagline'),('phone','Điện thoại'),('address','Địa chỉ chính xác'),('maps_url','Google Maps URL'),('google_review_url','Link đánh giá Google'),('hero_title','Tiêu đề Hero'),('delivery_note','Mô tả ngắn trên Hero')] %}
+<div class="form-field {% if k in ['address','maps_url','google_review_url','hero_title','delivery_note'] %}wide{% endif %}">
+  <label for="setting-{{k}}">{{label}}</label>
+  <input id="setting-{{k}}" name="{{k}}" value="{{site_settings.get(k, "")}}" placeholder="{{label}}" {% if k in ['maps_url','google_review_url'] %}type="url"{% endif %}>
+  {% if k == 'google_review_url' %}<small class="muted">Dán link mở trực tiếp màn hình <strong>Viết bài đánh giá</strong> trên Google. Có thể thay đổi bất cứ lúc nào mà không cần sửa code.</small>{% endif %}{% if k == 'delivery_note' %}<small class="muted">Nội dung này hiển thị ngay dưới tiêu đề Hero trên Trang Chủ.</small>{% endif %}
+</div>
+{% endfor %}
+</div>
+<div class="banner-setting logo-setting">
+  <div class="banner-setting-copy"><h3>🏷️ Logo trang chủ</h3><p class="muted">Chọn ảnh JPG, JPEG, PNG hoặc WEBP. <strong>Kích thước khuyến nghị: 380 × 96 px</strong> (tỷ lệ khoảng 4:1). Logo mới sẽ thay logo K&amp;K ở thanh đầu trang và chân trang.</p></div>
+  <input type="hidden" name="logo_image" value="{{site_settings.get('logo_image') or ''}}">
+  <label class="banner-upload"><span>Chọn ảnh logo mới</span><input id="logoImageFile" type="file" name="logo_image_file" accept="image/jpeg,image/png,image/webp"></label>
+  <div class="banner-preview-wrap logo-preview-wrap"><div class="banner-preview logo-preview" id="logoPreview"><div class="logo-preview-inner">{% if site_settings.get('logo_image') %}<img src="{{site_settings.get('logo_image')}}" alt="Logo hiện tại">{% else %}<b>K<span>&amp;</span>K</b><small>PHỞ &amp; BÁNH MÌ</small>{% endif %}</div></div><div class="banner-preview-meta"><b>Logo hiện tại</b><span class="muted">{{site_settings.get('logo_image') or 'Đang dùng logo chữ K&amp;K mặc định'}}</span></div></div>
+</div>
+<div class="banner-setting">
+  <div class="banner-setting-copy"><h3>🖼️ Banner trang chủ</h3><p class="muted">Chọn ảnh JPG, JPEG, PNG hoặc WEBP. <strong>Kích thước khuyến nghị: 2048 × 842 px</strong> (tỷ lệ khoảng 2,43:1) để hiển thị đẹp trên khu vực Hero trang chủ. Ảnh mới sẽ thay banner Hero hiện tại trên trang chủ.</p></div>
+  <input type="hidden" name="hero_image" value="{{site_settings.get('hero_image') or '/static/menu-board.png'}}">
+  <label class="banner-upload"><span>Chọn ảnh banner mới</span><input id="heroImageFile" type="file" name="hero_image_file" accept="image/jpeg,image/png,image/webp"></label>
+  <div class="banner-preview-wrap"><div class="banner-preview" id="heroBannerPreview"><img src="{{site_settings.get('hero_image') or '/static/menu-board.png'}}" alt="Banner trang chủ hiện tại"></div><div class="banner-preview-meta"><b>Banner hiện tại</b><span class="muted">{{site_settings.get('hero_image') or '/static/menu-board.png'}}</span></div></div>
+</div>
+<div class="location-admin-setting banner-setting">
+  <div class="banner-setting-copy"><h3>📍 Địa điểm trên Trang Chủ</h3><p class="muted">Cấu hình nội dung và 3 hình ảnh của mục <strong>Địa điểm K&amp;K</strong>. Địa chỉ, điện thoại và Google Maps ở phía trên vẫn được dùng chung cho mục này.</p></div>
+  <div class="settings-grid location-copy-grid">
+    {% for k,label in [('location_eyebrow','Nhãn nhỏ'),('location_heading','Tiêu đề mục Địa điểm'),('location_title','Tiêu đề nội dung'),('location_description','Mô tả chi tiết')] %}
+    <div class="form-field {% if k in ['location_title','location_description'] %}wide{% endif %}">
+      <label for="setting-{{k}}">{{label}}</label>
+      {% if k in ['location_description'] %}<textarea id="setting-{{k}}" name="{{k}}" rows="3" placeholder="{{label}}">{{site_settings.get(k, '')}}</textarea>{% else %}<input id="setting-{{k}}" name="{{k}}" value="{{site_settings.get(k, '')}}" placeholder="{{label}}">{% endif %}
+    </div>
+    {% endfor %}
+  </div>
+  <div class="location-image-admin-grid">
+    {% for k,label,help in [('location_main_image','Ảnh chính','Khuyến nghị ảnh ngang, rõ mặt tiền hoặc không gian nhà hàng.'),('location_side_image_1','Ảnh phụ 1','Ảnh món ăn, không gian hoặc chi tiết thương hiệu.'),('location_side_image_2','Ảnh phụ 2','Ảnh món ăn, không gian hoặc chi tiết thương hiệu.')] %}
+    <div class="location-image-admin-card">
+      <div class="location-image-admin-head"><strong>{{label}}</strong><span class="muted">{{help}}</span></div>
+      <input type="hidden" name="{{k}}" value="{{site_settings.get(k) or ''}}">
+      <label class="banner-upload"><span>Chọn ảnh mới</span><input id="{{k}}_file" type="file" name="{{k}}_file" accept="image/jpeg,image/png,image/webp"></label>
+      <div class="location-image-preview" id="{{k}}_preview"><img src="{{site_settings.get(k) or '/static/menu-board.png'}}" alt="{{label}} hiện tại"></div>
+      <small class="muted location-image-path">{{site_settings.get(k) or 'Chưa có ảnh'}}</small>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+<div class="settings-order-control" style="margin-top:20px;padding:18px 20px;border:1px solid #e5e7eb;border-radius:14px;background:#fafafa;display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap">
+  <div>
+    <h3 style="margin:0 0 5px">🛒 Đặt hàng trực tuyến</h3>
+    <p class="muted" style="margin:0;line-height:1.5">Bật/tắt các tính năng trực tuyến của website. Khi <strong>bật</strong>: khách có thể Đặt hàng, Đặt bàn và Theo dõi đơn. Khi <strong>tắt</strong>: cả 3 tính năng này sẽ được ẩn và tạm ngưng.</p>
+  </div>
+  <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-weight:700;white-space:nowrap">
+    <input type="hidden" name="online_order_enabled" value="0">
+    <input type="checkbox" name="online_order_enabled" value="1" {% if site_settings.get('online_order_enabled','0') in ['1','true','yes','on'] %}checked{% endif %} style="width:20px;height:20px;accent-color:#16a34a">
+    <span>{% if site_settings.get('online_order_enabled','0') in ['1','true','yes','on'] %}Đang bật{% else %}Đang tắt{% endif %}</span>
+  </label>
+</div>
+<div class="form-actions"><button class="btn green">✓ Lưu cài đặt</button></div></form></section>
+</main>
+</div></div></section></div>

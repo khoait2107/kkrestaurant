@@ -1,0 +1,17 @@
+[Unit]
+Description=K&K Restaurant Flask application
+After=network.target
+
+[Service]
+User=www-data
+Group=www-data
+WorkingDirectory=/var/www/kkrestaurant
+EnvironmentFile=/var/www/kkrestaurant/.env
+ExecStart=/var/www/kkrestaurant/.venv/bin/gunicorn -c gunicorn.conf.py app:app
+Restart=always
+RestartSec=5
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

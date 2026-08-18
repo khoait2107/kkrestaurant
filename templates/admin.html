@@ -1,0 +1,3 @@
+{% extends "base.html" %}
+{% block title %}Admin | K&K{% endblock %}
+{% block content %}<div id="adminRoot">{% include "admin_body.html" %}</div><script src="{{ url_for('static', filename='admin.js', v='2.7.2') }}"></script>{% endblock %}

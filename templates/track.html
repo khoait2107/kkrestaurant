@@ -1,0 +1,10 @@
+{% extends "base.html" %}{% block title %}Theo dõi đơn hàng | K&K{% endblock %}{% block content %}<section class="pagehero small"><div class="container"><div class="eyebrow">ORDER TRACKING</div><h1>Theo dõi đơn hàng</h1><p>Nhập mã đơn và số điện thoại.</p></div></section><section class="section"><div class="container narrow panel"><label>Mã đơn hàng<input id="code" placeholder="KK260809-AB12"></label><label>Số điện thoại<input id="phone" placeholder="Số điện thoại đã đặt hàng"></label><button class="btn red full" onclick="trackOrder()">Tra cứu đơn</button><div id="result"></div></div></section><script>async function trackOrder(){
+  const box=document.getElementById('result');
+  try{
+    const r=await fetch('/api/track',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({order_code:document.getElementById('code').value,phone:document.getElementById('phone').value})});
+    const d=await r.json();
+    if(!d.ok){box.innerHTML='<div class="notice notice-error"><span class="notice-icon">!</span><div><b>Không tìm thấy đơn hàng</b><span>'+escapeHtml(d.message)+'</span></div></div>';return}
+    let o=d.order,states=['Mới','Đã thanh toán','Đang chuẩn bị','Đang giao','Hoàn tất'],idx=states.indexOf(o.status);
+    box.innerHTML=`<div class="track"><h2>Đơn #${escapeHtml(o.order_code)}</h2><p>${escapeHtml(o.customer_name)} • ${fmt(o.total)}</p><div class="steps">${states.map((s,i)=>`<div class="${i<=idx?'done':''}"><i>✓</i><span>${s}</span></div>`).join('')}</div><p><b>Thanh toán:</b> ${escapeHtml(o.payment_status)}</p><p><b>Trạng thái:</b> ${escapeHtml(o.status)}</p></div>`;
+  }catch(e){box.innerHTML='<div class="notice notice-error"><span class="notice-icon">!</span><div><b>Không thể tra cứu</b><span>Không thể kết nối máy chủ. Vui lòng thử lại.</span></div></div>'}
+}</script>{% endblock %}
