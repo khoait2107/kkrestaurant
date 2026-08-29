@@ -1,6 +1,6 @@
 # K&K Restaurant — V2.7 Production Hardening
 
-Website nhà hàng K&K dùng Flask + SQLite, có menu, giỏ hàng, đặt hàng, voucher, đặt bàn, theo dõi đơn, VNPAY và Admin.
+Website nhà hàng K&K dùng Flask + SQLite, có menu, giỏ hàng, đặt hàng COD, voucher, đặt bàn, theo dõi đơn và Admin.
 
 ## Yêu cầu
 - Python 3.11+ (khuyến nghị 3.12)
@@ -52,20 +52,6 @@ Kiểm tra nhanh:
 python health_check.py
 ```
 
-## VNPAY production
-Return URL chỉ hiển thị kết quả. Server cập nhật trạng thái thanh toán qua IPN:
-```text
-/payment/vnpay-ipn
-```
-Cấu hình:
-```env
-VNPAY_TMN_CODE=...
-VNPAY_HASH_SECRET=...
-VNPAY_RETURN_URL=https://your-domain.com/payment/vnpay-return
-VNPAY_IPN_URL=https://your-domain.com/payment/vnpay-ipn
-```
-IPN phải là URL HTTPS public mà VNPAY có thể gọi tới.
-
 ## Production V2.7
 
 ### Windows Server
@@ -105,8 +91,7 @@ Không lưu backup production trong Git.
 
 ## Lưu ý
 - Không bật `debug=True` trên production.
-- Không dùng HTTP cho Admin/payment production.
-- VNPAY credentials là bí mật.
+- Không dùng HTTP cho Admin trên production.
 - Nếu chạy sau reverse proxy, chỉ bật `TRUST_PROXY=1` khi proxy là máy chủ bạn kiểm soát.
 
 

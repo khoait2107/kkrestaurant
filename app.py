@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, jsonify, session, redirect, url_for, send_from_directory, send_file
 from werkzeug.exceptions import HTTPException
-import sqlite3, os, json, secrets, hashlib, hmac, urllib.parse, re, io, time, logging
+import sqlite3, os, json, secrets, hashlib, hmac, re, io, time, logging
 from logging.handlers import RotatingFileHandler
 from datetime import datetime, timedelta
 from werkzeug.utils import secure_filename
@@ -84,11 +84,6 @@ MAX_IMPORT_ROWS=500
 ADMIN_PASSWORD_HASH=os.getenv("ADMIN_PASSWORD_HASH","")
 ADMIN_USERNAME=os.getenv("ADMIN_USERNAME","admin")
 ADMIN_IDLE_TIMEOUT=30*60
-VNPAY_TMN_CODE=os.getenv("VNPAY_TMN_CODE","")
-VNPAY_HASH_SECRET=os.getenv("VNPAY_HASH_SECRET","")
-VNPAY_URL=os.getenv("VNPAY_URL","https://sandbox.vnpayment.vn/paymentv2/vpcpay.html")
-VNPAY_RETURN_URL=os.getenv("VNPAY_RETURN_URL","http://127.0.0.1:5000/payment/vnpay-return")
-VNPAY_IPN_URL=os.getenv("VNPAY_IPN_URL","")
 TRUST_PROXY=os.getenv("TRUST_PROXY","0")=="1"
 FORCE_HTTPS=os.getenv("FORCE_HTTPS","0")=="1"
 HSTS_ENABLED=os.getenv("HSTS_ENABLED","0")=="1"
@@ -118,9 +113,9 @@ if not logger.handlers:
 CATEGORIES=[("all","Tất cả"),("pho","Phở"),("banh-mi","Bánh mì"),("bun","Bún"),("com","Cơm"),("chay","Món chay"),("trang-mieng","Tráng miệng")]
 DEFAULT_CATEGORIES=[("pho","Phở"),("banh-mi","Bánh mì"),("bun","Bún"),("com","Cơm"),("chay","Món chay"),("trang-mieng","Tráng miệng")]
 SEED_MENU=[{'id': 'pho-dac-biet', 'name': 'Phở Đặc Biệt', 'category': 'pho', 'price': 890, 'desc': 'Phở kết hợp bò tái, nạm, gân, bò viên và nước dùng thơm đậm vị.', 'badge': 'Bán chạy'}, {'id': 'pho-bo-tai', 'name': 'Phở Bò Tái', 'category': 'pho', 'price': 790, 'desc': 'Phở bò tái với nước dùng trong, thơm và đậm đà.'}, {'id': 'pho-tai-chin', 'name': 'Phở Tái Chín', 'category': 'pho', 'price': 790, 'desc': 'Phở bò tái và nạm chín.'}, {'id': 'pho-bo-vien', 'name': 'Phở Bò Viên', 'category': 'pho', 'price': 790, 'desc': 'Phở bò viên với nước dùng bò truyền thống.'}, {'id': 'pho-chin-vien', 'name': 'Phở Chín Viên', 'category': 'pho', 'price': 790, 'desc': 'Phở nạm chín và bò viên.'}, {'id': 'pho-ga', 'name': 'Phở Gà', 'category': 'pho', 'price': 790, 'desc': 'Phở gà với nước dùng nhẹ, thơm.'}, {'id': 'pho-tom', 'name': 'Phở Tôm', 'category': 'pho', 'price': 890, 'desc': 'Phở tôm, lựa chọn nước dùng phù hợp.'}, {'id': 'banh-mi-dac-biet', 'name': 'Bánh Mì Đặc Biệt', 'category': 'banh-mi', 'price': 790, 'desc': 'Bánh mì thịt heo, giăm bông Việt Nam và pate.', 'badge': 'Signature'}, {'id': 'banh-mi-thit-nuong', 'name': 'Bánh Mì Thịt Nướng', 'category': 'banh-mi', 'price': 690, 'desc': 'Bánh mì thịt heo nướng thơm.'}, {'id': 'banh-mi-ga', 'name': 'Bánh Mì Gà', 'category': 'banh-mi', 'price': 690, 'desc': 'Bánh mì gà nướng.'}, {'id': 'banh-mi-xa-xiu', 'name': 'Bánh Mì Xá Xíu', 'category': 'banh-mi', 'price': 690, 'desc': 'Bánh mì thịt heo xá xíu.'}, {'id': 'banh-mi-ca-ri-ga', 'name': 'Bánh Mì Cà Ri Gà', 'category': 'banh-mi', 'price': 690, 'desc': 'Gà cà ri dùng kèm bánh mì Pháp.'}, {'id': 'banh-mi-bo-kho', 'name': 'Bánh Mì Bò Kho', 'category': 'banh-mi', 'price': 790, 'desc': 'Bò kho Việt Nam dùng kèm bánh mì.'}, {'id': 'bun-cha', 'name': 'Bún Chả Giò Thịt/Tôm/Gà Nướng', 'category': 'bun', 'price': 890, 'desc': 'Bún với rau sống, dưa chua, giá, chả giò và lựa chọn thịt nướng, tôm hoặc gà.', 'badge': 'Bán chạy'}, {'id': 'bun-thit-ga-tom', 'name': 'Bún Thịt/Gà/Tôm Nướng', 'category': 'bun', 'price': 890, 'desc': 'Bún rau sống, bạc hà, dưa leo, cà rốt ngâm và đậu phộng.'}, {'id': 'bun-thit-nem', 'name': 'Bún Thịt Nem Nướng', 'category': 'bun', 'price': 890, 'desc': 'Thịt nướng và nem nướng dùng với bún.'}, {'id': 'bun-bo-xao-xa-ot', 'name': 'Bún Bò/Gà/Tôm Xào Xả Ớt', 'category': 'bun', 'price': 890, 'desc': 'Bún với bò, gà hoặc tôm xào sả ớt.'}, {'id': 'hu-tieu-mi', 'name': 'Hủ Tiếu Mì', 'category': 'bun', 'price': 890, 'desc': 'Hủ tiếu mì hải sản hoặc trứng.'}, {'id': 'com-bo-xao-luc-lac', 'name': 'Cơm Bò Xào Lúc Lắc', 'category': 'com', 'price': 990, 'desc': 'Bò xào bông cải, ớt chuông, hành tây và cơm trắng.', 'badge': 'Signature'}, {'id': 'com-bo-ga-tom-xao', 'name': 'Cơm Bò/Gà/Tôm Xào Sả Ớt', 'category': 'com', 'price': 990, 'desc': 'Bò, gà hoặc tôm xào sả ớt với cơm trắng.'}, {'id': 'com-ga-thit-tom-nuong', 'name': 'Cơm Gà/Thịt/Tôm Nướng', 'category': 'com', 'price': 990, 'desc': 'Cơm trắng, salad và lựa chọn món nướng.'}, {'id': 'com-tay-cam', 'name': 'Cơm Tay Cầm', 'category': 'com', 'price': 1090, 'desc': 'Cơm chiên kết hợp tôm, gà, bò xào rau củ trong thố nóng.'}, {'id': 'che-ba-mau', 'name': 'Chè Ba Màu', 'category': 'trang-mieng', 'price': 490, 'desc': 'Chè ba màu với thạch và nước cốt dừa.'}, {'id': 'kem-chuoi', 'name': 'Kem Chuối/Chiên', 'category': 'trang-mieng', 'price': 490, 'desc': 'Chuối chiên dùng kèm kem.'}, {'id': 'yogurt', 'name': 'Yogurt', 'category': 'trang-mieng', 'price': 390, 'desc': 'Sữa chua Việt Nam.'}, {'id': 'tofu-cuon-chay', 'name': 'Tofu Cuốn', 'category': 'chay', 'price': 690, 'desc': 'Đậu hũ chiên cuốn bánh tráng, rau sống và sốt đậu phộng.'}, {'id': 'banh-mi-chay', 'name': 'Bánh Mì Chay', 'category': 'chay', 'price': 590, 'desc': 'Đậu hũ, nấm xào cuốn bánh mì cùng rau và sốt.'}, {'id': 'goi-chay', 'name': 'Gỏi Chay', 'category': 'chay', 'price': 690, 'desc': 'Gỏi bắp cải với đậu hũ xào và đậu phộng.'}, {'id': 'pho-chay', 'name': 'Phở Chay', 'category': 'chay', 'price': 790, 'desc': 'Phở rau củ, đậu hũ, giá, húng quế và jalapeño.'}, {'id': 'bun-xao-chay', 'name': 'Bún Xào Chay', 'category': 'chay', 'price': 690, 'desc': 'Đậu hũ, bắp cải, cà rốt, mì gạo, dưa leo, rau xà lách và bạc hà.'}, {'id': 'mi-xao-chay', 'name': 'Mì Xào Chay', 'category': 'chay', 'price': 690, 'desc': 'Mì trứng xào đậu hũ và rau củ.'}, {'id': 'com-tay-cam-chay', 'name': 'Cơm Tay Cầm Chay', 'category': 'chay', 'price': 790, 'desc': 'Rau củ và đậu hũ xào trong thố nóng.'}]
-DEFAULT_SETTINGS={"restaurant_name":"Phở & Bánh Mì K&K","tagline":"AUTHENTIC VIETNAMESE CUISINE","phone":"510.666.9966","address":"Cập nhật địa chỉ nhà hàng trong Admin","maps_url":"https://www.google.com/maps/search/?api=1&query=Pho+%26+Banh+Mi+K%26K+510.666.9966","google_review_url":"","hero_title":"Hương vị Việt, trọn vẹn trong từng món.","delivery_note":"Đặt món online nhanh chóng • COD hoặc thanh toán online","hero_image":"/static/menu-board.png","logo_image":"","online_order_enabled":"0","currency":"USD","currency_symbol":"$","location_eyebrow":"LOCATION","location_heading":"Địa điểm K&K","location_title":"Ghé K&K thưởng thức món ngon","location_description":"K&K phục vụ phở, bánh mì và các món Việt quen thuộc. Quý khách có thể xem thực đơn trước khi ghé nhà hàng và liên hệ trực tiếp với K&K nếu cần hỗ trợ.","location_main_image":"/static/menu-board.png","location_side_image_1":"/uploads/banh-mi-dac-biet_9353a2073b16.png","location_side_image_2":"/uploads/pho-dac-biet_d3d371fb4ca8.png"}
+DEFAULT_SETTINGS={"restaurant_name":"Phở & Bánh Mì K&K","tagline":"AUTHENTIC VIETNAMESE CUISINE","phone":"510.666.9966","address":"Cập nhật địa chỉ nhà hàng trong Admin","maps_url":"https://www.google.com/maps/search/?api=1&query=Pho+%26+Banh+Mi+K%26K+510.666.9966","google_review_url":"","hero_title":"Hương vị Việt, trọn vẹn trong từng món.","delivery_note":"Đặt món online nhanh chóng • Thanh toán khi nhận hàng (COD)","hero_image":"/static/menu-board.png","logo_image":"","online_order_enabled":"0","currency":"USD","currency_symbol":"$","location_eyebrow":"LOCATION","location_heading":"Địa điểm K&K","location_title":"Ghé K&K thưởng thức món ngon","location_description":"K&K phục vụ phở, bánh mì và các món Việt quen thuộc. Quý khách có thể xem thực đơn trước khi ghé nhà hàng và liên hệ trực tiếp với K&K nếu cần hỗ trợ.","location_main_image":"/static/menu-board.png","location_side_image_1":"/uploads/banh-mi-dac-biet_9353a2073b16.png","location_side_image_2":"/uploads/pho-dac-biet_d3d371fb4ca8.png"}
 
-ORDER_STATUSES=["Mới","Đã thanh toán","Đang chuẩn bị","Đang giao","Hoàn tất","Đã hủy"]
+ORDER_STATUSES=["Mới","Đang chuẩn bị","Đang giao","Hoàn tất","Đã hủy"]
 BOOKING_STATUSES=["Mới","Đã xác nhận","Hoàn tất","Đã hủy"]
 VOUCHER_TYPES={"percent","fixed"}
 IMAGE_EXTENSIONS={"jpg","jpeg","png","webp"}
@@ -462,6 +457,11 @@ def init_db():
     order_cols={r["name"] for r in c.execute("PRAGMA table_info(orders)").fetchall()}
     if "idempotency_key" not in order_cols:
         c.execute("ALTER TABLE orders ADD COLUMN idempotency_key TEXT")
+    # Categories must exist before menu rows are inserted because menu_items
+    # is migrated to enforce a foreign key to categories below.
+    if c.execute("SELECT COUNT(*) n FROM categories").fetchone()["n"]==0:
+        for i,(cid,cname) in enumerate(DEFAULT_CATEGORIES):
+            c.execute("INSERT INTO categories VALUES(?,?,?,1)",(cid,cname,i))
     # Migrate legacy menu_items to a real foreign key once categories exist.
     fk_menu=c.execute("PRAGMA foreign_key_list(menu_items)").fetchall()
     orphan_count=c.execute("""SELECT COUNT(*) n FROM menu_items m
@@ -493,9 +493,6 @@ def init_db():
                  f"/static/dishes/{x['id']}.svg",x.get("badge",""),1,0,0))
     for k,v in DEFAULT_SETTINGS.items():
         c.execute("INSERT OR IGNORE INTO settings VALUES(?,?)",(k,v))
-    if c.execute("SELECT COUNT(*) n FROM categories").fetchone()["n"]==0:
-        for i,(cid,cname) in enumerate(DEFAULT_CATEGORIES):
-            c.execute("INSERT INTO categories VALUES(?,?,?,1)",(cid,cname,i))
     # Give legacy rows a stable order only when the column is still at its
     # untouched default (0 for every row). Never reset an order already chosen
     # by an administrator on every application restart.
@@ -557,27 +554,6 @@ def featured_menu():
         ORDER BY m.sort_order,m.name LIMIT 8""").fetchall(); c.close()
     return [dict(r) for r in rows]
 
-def vnpay_url(order_id,total,ip):
-    if not VNPAY_TMN_CODE or not VNPAY_HASH_SECRET: return None
-    now=datetime.now(); expire=now+timedelta(minutes=15)
-    params={"vnp_Version":"2.1.0","vnp_Command":"pay","vnp_TmnCode":VNPAY_TMN_CODE,
-            "vnp_Amount":str(total),"vnp_CurrCode":"USD","vnp_TxnRef":str(order_id),
-            "vnp_OrderInfo":f"Thanh toan don hang K&K {order_id}","vnp_OrderType":"other",
-            "vnp_Locale":"vn","vnp_ReturnUrl":VNPAY_RETURN_URL,"vnp_IpAddr":ip,
-            "vnp_CreateDate":now.strftime("%Y%m%d%H%M%S"),
-            "vnp_ExpireDate":expire.strftime("%Y%m%d%H%M%S")}
-    encoded=urllib.parse.urlencode(sorted(params.items()))
-    secure=hmac.new(VNPAY_HASH_SECRET.encode(),encoded.encode(),hashlib.sha512).hexdigest()
-    return VNPAY_URL+"?"+encoded+"&vnp_SecureHash="+secure
-
-def verify_vnpay(args):
-    data={k:v for k,v in args.items()
-          if k.startswith("vnp_") and k not in ("vnp_SecureHash","vnp_SecureHashType")}
-    secure=args.get("vnp_SecureHash","")
-    encoded=urllib.parse.urlencode(sorted(data.items()))
-    calc=hmac.new(VNPAY_HASH_SECRET.encode(),encoded.encode(),hashlib.sha512).hexdigest()
-    return hmac.compare_digest(calc.lower(),secure.lower())
-
 @app.context_processor
 def inject():
     return {"s":settings(),"restaurant_name":"Phở & Bánh Mì K&K","online_order_enabled":online_order_enabled()}
@@ -634,10 +610,10 @@ def voucher():
 @app.post("/api/orders")
 def create_order():
     d=request.json or {}
-    required=["customer_name","phone","address","items","payment_method"]
+    required=["customer_name","phone","address","items"]
     if not all(str(d.get(x) or "").strip() for x in required):
         return jsonify(ok=False,message="Vui lòng điền đủ thông tin."),400
-    if d.get("payment_method") not in ("cod","online"):
+    if d.get("payment_method") not in (None,"","cod"):
         return jsonify(ok=False,message="Phương thức thanh toán không hợp lệ."),400
     items=d.get("items")
     if not isinstance(items,list) or not items:
@@ -667,13 +643,10 @@ def create_order():
     c=conn()
     try:
         # Idempotency: a retried request returns the already-created order.
-        existing=c.execute("""SELECT id,order_code,total,payment_method,payment_status
+        existing=c.execute("""SELECT order_code
                              FROM orders WHERE idempotency_key=?""",(idempotency_key,)).fetchone()
         if existing:
-            payment_url=None
-            if existing["payment_method"]=="online" and existing["payment_status"]!="Đã thanh toán":
-                payment_url=vnpay_url(existing["id"],int(existing["total"]),client_ip())
-            return jsonify(ok=True,order_code=existing["order_code"],payment_url=payment_url,idempotent=True)
+            return jsonify(ok=True,order_code=existing["order_code"],idempotent=True)
 
         placeholders=",".join("?" for _ in requested)
         rows=c.execute(
@@ -713,96 +686,23 @@ def create_order():
                 VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
                 (code,str(d["customer_name"]).strip(),str(d["phone"]).strip(),str(d["address"]).strip(),
                  str(d.get("note") or "").strip(),json.dumps(normalized,ensure_ascii=False),
-                 sub,disc,total,d["payment_method"],
-                 "Chưa thanh toán" if d["payment_method"]=="online" else "COD",
+                 sub,disc,total,"cod","COD",
                  "Mới",datetime.now().strftime("%Y-%m-%d %H:%M:%S"),idempotency_key))
-            oid=cur.lastrowid
             c.commit()
         except sqlite3.IntegrityError:
             c.rollback()
-            existing=c.execute("""SELECT id,order_code,total,payment_method,payment_status
+            existing=c.execute("""SELECT order_code
                                  FROM orders WHERE idempotency_key=?""",(idempotency_key,)).fetchone()
             if existing:
-                payment_url=None
-                if existing["payment_method"]=="online" and existing["payment_status"]!="Đã thanh toán":
-                    payment_url=vnpay_url(existing["id"],int(existing["total"]),client_ip())
-                return jsonify(ok=True,order_code=existing["order_code"],payment_url=payment_url,idempotent=True)
+                return jsonify(ok=True,order_code=existing["order_code"],idempotent=True)
             raise
-        if d["payment_method"]=="online":
-            url=vnpay_url(oid,total,client_ip())
-            if not url:
-                c.execute("DELETE FROM orders WHERE id=?",(oid,)); c.commit()
-                return jsonify(ok=False,message="Chưa cấu hình VNPAY. Hãy thêm VNPAY_TMN_CODE và VNPAY_HASH_SECRET."),500
-            return jsonify(ok=True,order_code=code,payment_url=url)
-        return jsonify(ok=True,order_code=code,payment_url=None)
+        return jsonify(ok=True,order_code=code)
     except Exception:
         c.rollback()
         logger.exception("create_order failed")
         return jsonify(ok=False,message="Không thể tạo đơn hàng. Vui lòng thử lại."),500
     finally:
         c.close()
-
-def process_vnpay_notification(args):
-    if not VNPAY_HASH_SECRET or not verify_vnpay(args):
-        return 97, "Invalid signature"
-    oid=str(args.get("vnp_TxnRef") or "").strip()
-    c=conn()
-    try:
-        row=c.execute("""SELECT id,order_code,total,payment_status,payment_method
-                         FROM orders WHERE id=? AND payment_method='online'""",(oid,)).fetchone()
-        if not row:
-            return 1, "Order not found"
-        try:
-            amount=int(args.get("vnp_Amount","-1"))
-        except (TypeError,ValueError):
-            amount=-1
-        if amount != int(row["total"]):
-            return 4, "Invalid amount"
-        success=(args.get("vnp_ResponseCode")=="00" and args.get("vnp_TransactionStatus","00")=="00")
-        if row["payment_status"]=="Đã thanh toán":
-            return 2, "Order already confirmed"
-        if success:
-            c.execute("UPDATE orders SET payment_status='Đã thanh toán',status='Đã thanh toán' WHERE id=?",(oid,))
-            c.commit()
-        else:
-            c.execute("UPDATE orders SET payment_status='Thất bại' WHERE id=?",(oid,))
-            c.commit()
-        audit_log("VNPAY_IPN","order",oid,{"response_code":args.get("vnp_ResponseCode"),"transaction_no":args.get("vnp_TransactionNo","")})
-        return 0, "Confirm Success"
-    except Exception:
-        c.rollback()
-        logger.exception("VNPAY IPN failed")
-        return 99, "Unknown error"
-    finally:
-        c.close()
-
-@app.get("/payment/vnpay-return")
-def vnpay_return():
-    if not VNPAY_HASH_SECRET or not verify_vnpay(request.args):
-        return render_template("payment_result.html",ok=False,message="Không xác thực được giao dịch.")
-    oid=request.args.get("vnp_TxnRef","").strip()
-    success=request.args.get("vnp_ResponseCode")=="00"
-    c=conn()
-    row=c.execute("SELECT id,order_code,total,payment_status,status FROM orders WHERE id=? AND payment_method='online'",(oid,)).fetchone()
-    c.close()
-    if not row:
-        return render_template("payment_result.html",ok=False,order_code=oid,message="Không tìm thấy đơn hàng.")
-    try:
-        paid_amount=int(request.args.get("vnp_Amount","0"))
-    except (TypeError,ValueError):
-        paid_amount=-1
-    if success and paid_amount!=int(row["total"]):
-        return render_template("payment_result.html",ok=False,order_code=row["order_code"],message="Số tiền thanh toán không khớp đơn hàng.")
-    # Return URL is display-only. The authoritative update is done by IPN.
-    message=("Thanh toán thành công. Hệ thống đang xác nhận giao dịch."
-             if success else "Thanh toán chưa thành công.")
-    return render_template("payment_result.html",ok=success,order_code=row["order_code"],message=message)
-
-@app.get("/payment/vnpay-ipn")
-@app.post("/payment/vnpay-ipn")
-def vnpay_ipn():
-    code,message=process_vnpay_notification(request.args if request.method=="GET" else request.form)
-    return jsonify(RspCode=f"{code:02d}",Message=message)
 
 @app.post("/api/bookings")
 def create_booking():

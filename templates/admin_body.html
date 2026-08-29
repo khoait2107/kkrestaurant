@@ -34,7 +34,7 @@
 <div class="stats"><div><span>Đơn hàng</span><b>{{orders|length}}</b></div><div><span>Đặt bàn</span><b>{{bookings|length}}</b></div><div><span>Món đang bán</span><b>{{items|selectattr('active','equalto',1)|list|length}}</b></div></div>
 </div>
 <section id="orders" class="admin-section"><h2>Đơn hàng</h2><div class="tablewrap"><table><tr><th>Mã</th><th>Khách</th><th>Tổng</th><th>Thanh toán</th><th>Trạng thái</th><th>Ngày</th></tr>
-{% for o in orders %}<tr><td><b>{{o.order_code}}</b></td><td>{{o.customer_name}}<br>{{o.phone}}</td><td>{{o.total|money}}</td><td>{{o.payment_status}}</td><td><select data-status-url="/admin/order/{{o.id}}/status">{% for st in ['Mới','Đã thanh toán','Đang chuẩn bị','Đang giao','Hoàn tất','Đã hủy'] %}<option {% if o.status==st %}selected{% endif %}>{{st}}</option>{% endfor %}</select></td><td>{{o.created_at}}</td></tr>{% endfor %}
+{% for o in orders %}<tr><td><b>{{o.order_code}}</b></td><td>{{o.customer_name}}<br>{{o.phone}}</td><td>{{o.total|money}}</td><td>{{o.payment_status}}</td><td><select data-status-url="/admin/order/{{o.id}}/status">{% for st in ['Mới','Đang chuẩn bị','Đang giao','Hoàn tất','Đã hủy'] %}<option {% if o.status==st %}selected{% endif %}>{{st}}</option>{% endfor %}</select></td><td>{{o.created_at}}</td></tr>{% endfor %}
 </table></div></section>
 
 <section id="bookings" class="admin-section"><h2>Đặt bàn</h2><div class="tablewrap"><table><tr><th>Khách</th><th>Ngày/Giờ</th><th>Số khách</th><th>Ghi chú</th><th>Trạng thái</th></tr>

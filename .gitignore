@@ -1,0 +1,18 @@
+# Local configuration and runtime data
+.env
+data/*.db
+data/import_staging/
+backups/
+logs/
+uploads/
+
+# Python environments and generated files
+.venv/
+__pycache__/
+*.py[cod]
+
+# Editor and OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

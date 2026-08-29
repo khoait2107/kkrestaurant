@@ -308,8 +308,7 @@
       TOGGLE:'Ẩn/hiện',
       MOVE:'Di chuyển',
       UPSERT:'Cập nhật voucher',
-      IMPORT:'Import Excel',
-      VNPAY_IPN:'VNPAY IPN'
+      IMPORT:'Import Excel'
     };
     return labels[action] || action || '—';
   }

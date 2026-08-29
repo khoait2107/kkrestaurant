@@ -18,6 +18,9 @@ def main():
         results.append(check("Database", False, DB)); return 1
     c=sqlite3.connect(DB)
     c.row_factory=sqlite3.Row
+    # SQLite enforces foreign keys per connection. Enable it before checking
+    # so this diagnostic mirrors the application's `conn()` configuration.
+    c.execute("PRAGMA foreign_keys=ON")
     results.append(check("Database connection", True))
     results.append(check("SQLite integrity", c.execute("PRAGMA integrity_check").fetchone()[0]=="ok"))
     results.append(check("Foreign keys", c.execute("PRAGMA foreign_keys").fetchone()[0]==1))
