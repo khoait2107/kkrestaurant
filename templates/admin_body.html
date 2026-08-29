@@ -1,4 +1,4 @@
-<div id="adminContent"><section class="pagehero small"><div class="container adminhead"><div><div class="eyebrow">ADMIN DASHBOARD</div><h1>Quản trị K&K</h1></div><a href="/admin/logout" class="btn light">Đăng xuất</a></div></section>
+<div id="adminContent"><section class="pagehero small"><div class="container adminhead"><div><div class="eyebrow">ADMIN DASHBOARD</div><h1>Quản trị K&K</h1></div><form method="post" action="/admin/logout" style="display:inline"><input type="hidden" name="_csrf" value="{{admin_csrf_token}}"><button type="submit" class="btn light">Đăng xuất</button></form></div></section>
 <section class="section admin-shell-section"><div class="container">
 <input type="hidden" id="adminCsrfToken" name="_csrf" value="{{ admin_csrf_token }}">
 <div class="admin-layout">
@@ -68,7 +68,7 @@
     <div><h2>⭐ Món nổi bật & thứ tự</h2><p class="muted">Bật “Nổi bật” cho món muốn đưa lên trang chủ. Kéo thả để sắp xếp thứ tự hiển thị; thứ tự này cũng được dùng cho menu.</p></div>
     <button class="btn green" type="button" onclick="saveMenuOrder()">✓ Lưu thứ tự</button>
   </div>
-  <div class="featured-toolbar"><span id="orderSaveState" class="muted">Kéo thả các món để sắp xếp.</span><span class="featured-count"><b id="featuredCount">0</b> món nổi bật</span></div>
+  <div class="featured-toolbar"><span id="orderSaveState" class="muted">Kéo thả các món để sắp xếp.</span><span class="featured-count"><b id="featuredCount">{{featured_count}}</b> món nổi bật</span></div>
   <div id="featuredSortList" class="featured-sort-list">
   {% for x in featured_items %}
     <article class="featured-sort-item {% if x.featured %}is-featured{% endif %}" draggable="true" data-id="{{x.id}}">

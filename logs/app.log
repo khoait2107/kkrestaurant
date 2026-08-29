@@ -22,3 +22,5 @@ ValueError: Import tạo ra hơn 8 món nổi bật. Hãy giảm Featured=Yes xu
 2026-08-23 10:35:05,375 INFO Database backup created: D:\BELUYEN\kkrestaurant\backups\kk_2026-08-23_10-35-05.db
 2026-08-29 09:35:29,177 INFO Database backup created: D:\BELUYEN\kkrestaurant\backups\kk_2026-08-29_09-35-29.db
 2026-08-29 09:35:29,187 INFO Database backup created: D:\BELUYEN\kkrestaurant\backups\kk_2026-08-29_09-35-29.db
+2026-08-29 10:31:37,125 INFO Database backup created: D:\BELUYEN\kkrestaurant_fixed_with_git_venv_2026-08-29\kkrestaurant\backups\kk_2026-08-29_10-31-37.db
+2026-08-29 10:31:37,135 INFO Database backup created: D:\BELUYEN\kkrestaurant_fixed_with_git_venv_2026-08-29\kkrestaurant\backups\kk_2026-08-29_10-31-37.db

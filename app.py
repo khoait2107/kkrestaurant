@@ -436,7 +436,11 @@ def init_db():
         c.execute("ALTER TABLE vouchers ADD COLUMN end_date TEXT")
     c.execute("""CREATE TABLE IF NOT EXISTS bookings(
         id INTEGER PRIMARY KEY AUTOINCREMENT,name TEXT,phone TEXT,booking_date TEXT,
-        booking_time TEXT,guests INTEGER,note TEXT,status TEXT,created_at TEXT)""")
+        booking_time TEXT,guests INTEGER,note TEXT,status TEXT,created_at TEXT,
+        idempotency_key TEXT)""")
+    booking_cols={r["name"] for r in c.execute("PRAGMA table_info(bookings)").fetchall()}
+    if "idempotency_key" not in booking_cols:
+        c.execute("ALTER TABLE bookings ADD COLUMN idempotency_key TEXT")
     c.execute("""CREATE TABLE IF NOT EXISTS settings(k TEXT PRIMARY KEY,v TEXT)""")
     c.execute("""CREATE TABLE IF NOT EXISTS rate_limit_hits(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -506,6 +510,7 @@ def init_db():
         (code,type,value,min_order,active,start_date,end_date)
         VALUES ('KK50','fixed',500,5000,1,NULL,NULL)""")
     c.execute("CREATE UNIQUE INDEX IF NOT EXISTS idx_orders_idempotency ON orders(idempotency_key) WHERE idempotency_key IS NOT NULL")
+    c.execute("CREATE UNIQUE INDEX IF NOT EXISTS idx_bookings_idempotency ON bookings(idempotency_key) WHERE idempotency_key IS NOT NULL")
     c.execute("CREATE INDEX IF NOT EXISTS idx_orders_status_created ON orders(status,created_at)")
     c.execute("CREATE INDEX IF NOT EXISTS idx_orders_phone_code ON orders(phone,order_code)")
     c.execute("CREATE INDEX IF NOT EXISTS idx_bookings_date_status ON bookings(booking_date,status)")
@@ -720,13 +725,35 @@ def create_booking():
         return jsonify(ok=False,message="Ngày đặt bàn không được ở trong quá khứ."),400
     if not 1 <= guests <= 50:
         return jsonify(ok=False,message="Số khách phải từ 1 đến 50."),400
+    idem=(request.headers.get("Idempotency-Key") or d.get("idempotency_key") or "").strip()
+    if not idem:
+        idem=secrets.token_urlsafe(24)
+    if len(idem)>200:
+        return jsonify(ok=False,message="Yêu cầu đặt bàn không hợp lệ."),400
     c=conn()
-    cur=c.execute("""INSERT INTO bookings
-        (name,phone,booking_date,booking_time,guests,note,status,created_at)
-        VALUES(?,?,?,?,?,?,?,?)""",
-        (str(d["name"]).strip(),str(d["phone"]).strip(),booking_date.isoformat(),booking_time.strftime("%H:%M"),
-         guests,str(d.get("note") or "").strip(),"Mới",datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
-    bid=cur.lastrowid; c.commit(); c.close()
+    try:
+        existing=c.execute("SELECT id FROM bookings WHERE idempotency_key=?",(idem,)).fetchone()
+        if existing:
+            c.close()
+            return jsonify(ok=True,booking_id=existing["id"],duplicate=True)
+        cur=c.execute("""INSERT INTO bookings
+            (name,phone,booking_date,booking_time,guests,note,status,created_at,idempotency_key)
+            VALUES(?,?,?,?,?,?,?,?,?)""",
+            (str(d["name"]).strip(),str(d["phone"]).strip(),booking_date.isoformat(),booking_time.strftime("%H:%M"),
+             guests,str(d.get("note") or "").strip(),"Mới",datetime.now().strftime("%Y-%m-%d %H:%M:%S"),idem))
+        bid=cur.lastrowid
+        c.commit()
+    except sqlite3.IntegrityError:
+        c.rollback()
+        existing=c.execute("SELECT id FROM bookings WHERE idempotency_key=?",(idem,)).fetchone()
+        if not existing:
+            raise
+        bid=existing["id"]
+        c.close()
+        return jsonify(ok=True,booking_id=bid,duplicate=True)
+    finally:
+        try: c.close()
+        except Exception: pass
     logger.info("New booking %s from %s", bid, client_ip())
     return jsonify(ok=True,booking_id=bid)
 
@@ -758,6 +785,9 @@ def admin_context():
         JOIN categories c ON c.id=m.category
         WHERE m.active=1 AND c.active=1
         ORDER BY m.sort_order,m.name""").fetchall()]
+    featured_count=c.execute("""SELECT COUNT(*) n FROM menu_items m
+        JOIN categories c ON c.id=m.category
+        WHERE m.featured=1 AND m.active=1 AND c.active=1""").fetchone()["n"]
     site_settings={r["k"]:r["v"] for r in c.execute("SELECT k,v FROM settings").fetchall()}
     for k,v in DEFAULT_SETTINGS.items():
         site_settings.setdefault(k,v)
@@ -765,7 +795,7 @@ def admin_context():
     account=get_admin_account()
     return dict(orders=orders, bookings=bookings, vouchers=vouchers, items=items, cats=cats,
                 categories=category_options, category_names=category_names,
-                category_groups=category_groups, featured_items=featured_items,
+                category_groups=category_groups, featured_items=featured_items, featured_count=featured_count,
                 site_settings=site_settings, admin_account=account,
                 admin_csrf_token=admin_csrf_token())
 
@@ -797,7 +827,7 @@ def login():
 
     return render_template("admin_login.html",error="Sai tài khoản hoặc mật khẩu.")
 
-@app.get("/admin/logout")
+@app.post("/admin/logout")
 def logout():
     session.clear()
     return redirect("/admin")
@@ -1673,7 +1703,7 @@ def admin_health():
         present={r["name"] for r in c.execute("SELECT name FROM sqlite_master WHERE type='table'").fetchall()}
         checks["required_tables"]=required.issubset(present)
         required_indexes={"idx_orders_idempotency","idx_orders_status_created","idx_orders_phone_code",
-                          "idx_bookings_date_status","idx_menu_category_active_order",
+                          "idx_bookings_date_status","idx_bookings_idempotency","idx_menu_category_active_order",
                           "idx_categories_active_order","idx_rate_limit_lookup","idx_audit_logs_created"}
         present_idx={r["name"] for r in c.execute("SELECT name FROM sqlite_master WHERE type='index'").fetchall()}
         checks["required_indexes"]=required_indexes.issubset(present_idx)

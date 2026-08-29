@@ -1,4 +1,4 @@
-import os, sqlite3, sys, importlib.util
+import os, sqlite3, sys, importlib.util, time
 
 BASE=os.path.dirname(os.path.abspath(__file__))
 DB=os.path.join(BASE,"data","kk.db")
@@ -28,10 +28,13 @@ def main():
     tables={r["name"] for r in c.execute("SELECT name FROM sqlite_master WHERE type='table'")}
     required={"admin_account","menu_items","categories","orders","bookings","vouchers","settings","audit_logs","rate_limit_hits"}
     results.append(check("Required tables", required.issubset(tables)))
+    indexes={r["name"] for r in c.execute("SELECT name FROM sqlite_master WHERE type='index'").fetchall()}
+    results.append(check("Booking idempotency index", "idx_bookings_idempotency" in indexes))
     c.close()
     backups=os.path.join(BASE,"backups")
     newest=max((os.path.join(backups,x) for x in os.listdir(backups) if x.startswith("kk_") and x.endswith(".db")),key=os.path.getmtime,default=None) if os.path.isdir(backups) else None
-    results.append(check("Recent backup", bool(newest), os.path.basename(newest) if newest else "chưa có"))
+    backup_ok=bool(newest and time.time()-os.path.getmtime(newest)<48*3600)
+    results.append(check("Recent backup", backup_ok, (os.path.basename(newest) if newest else "chưa có") + ("" if backup_ok else " — quá 48 giờ hoặc chưa có")))
     print("\nRESULT:", "PASS" if all(results) else "FAIL")
     return 0 if all(results) else 1
 
