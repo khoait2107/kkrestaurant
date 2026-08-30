@@ -18,7 +18,7 @@
         <b>K<span>&</span>K</b>
         <small>PHỞ & BÁNH MÌ</small>
     </a>
-<nav><a href="/">Trang chủ</a><a href="/menu">Thực đơn</a><a href="/#locations">Địa điểm</a>{% if online_order_enabled %}<a href="/book">Đặt bàn</a><a href="/track">Theo dõi đơn</a>{% endif %}</nav>
+<nav><a href="/">Trang chủ</a><a href="/menu">Thực đơn</a><a href="/#locations">Địa điểm</a>{% if booking_enabled %}<a href="/book">Đặt bàn</a>{% endif %}{% if online_order_enabled %}<a href="/track">Theo dõi đơn</a>{% endif %}</nav>
 <div class="nav-right"><a class="hotline" href="tel:+1{{s.phone|replace('.','')}}">☎ {{s.phone}}</a>{% if online_order_enabled %}<a class="cart" href="#" onclick="openCart();return false">🛒 <i id="cart-count">0</i></a>{% endif %}<button class="hamb" onclick="document.querySelector('nav').classList.toggle('show')">☰</button></div></div></header>
 <main>{% block content %}{% endblock %}</main>
 <footer><div class="container foot-grid"><div>{% if s.logo_image %}<img src="{{s.logo_image}}" alt="{{s.restaurant_name}}" class="site-footer-logo">{% else %}<div class="foot-logo">K&K</div>{% endif %}<p>{{s.tagline}}</p></div><div><h3>Liên hệ</h3><p>☎ <a href="tel:+1{{s.phone|replace('.','')}}">{{s.phone}}</a></p><p>{{s.address}}</p><a class="map-link" href="{{s.maps_url}}" target="_blank">📍 Xem Google Maps</a></div><div><h3>{{ 'Đặt món' if online_order_enabled else 'Thực đơn' }}</h3><a class="btn red" href="/menu">Xem thực đơn</a></div></div><div class="copy">© 2026 {{s.restaurant_name}}</div></footer>

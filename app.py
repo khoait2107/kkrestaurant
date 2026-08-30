@@ -113,7 +113,7 @@ if not logger.handlers:
 CATEGORIES=[("all","Tất cả"),("pho","Phở"),("banh-mi","Bánh mì"),("bun","Bún"),("com","Cơm"),("chay","Món chay"),("trang-mieng","Tráng miệng")]
 DEFAULT_CATEGORIES=[("pho","Phở"),("banh-mi","Bánh mì"),("bun","Bún"),("com","Cơm"),("chay","Món chay"),("trang-mieng","Tráng miệng")]
 SEED_MENU=[{'id': 'pho-dac-biet', 'name': 'Phở Đặc Biệt', 'category': 'pho', 'price': 890, 'desc': 'Phở kết hợp bò tái, nạm, gân, bò viên và nước dùng thơm đậm vị.', 'badge': 'Bán chạy'}, {'id': 'pho-bo-tai', 'name': 'Phở Bò Tái', 'category': 'pho', 'price': 790, 'desc': 'Phở bò tái với nước dùng trong, thơm và đậm đà.'}, {'id': 'pho-tai-chin', 'name': 'Phở Tái Chín', 'category': 'pho', 'price': 790, 'desc': 'Phở bò tái và nạm chín.'}, {'id': 'pho-bo-vien', 'name': 'Phở Bò Viên', 'category': 'pho', 'price': 790, 'desc': 'Phở bò viên với nước dùng bò truyền thống.'}, {'id': 'pho-chin-vien', 'name': 'Phở Chín Viên', 'category': 'pho', 'price': 790, 'desc': 'Phở nạm chín và bò viên.'}, {'id': 'pho-ga', 'name': 'Phở Gà', 'category': 'pho', 'price': 790, 'desc': 'Phở gà với nước dùng nhẹ, thơm.'}, {'id': 'pho-tom', 'name': 'Phở Tôm', 'category': 'pho', 'price': 890, 'desc': 'Phở tôm, lựa chọn nước dùng phù hợp.'}, {'id': 'banh-mi-dac-biet', 'name': 'Bánh Mì Đặc Biệt', 'category': 'banh-mi', 'price': 790, 'desc': 'Bánh mì thịt heo, giăm bông Việt Nam và pate.', 'badge': 'Signature'}, {'id': 'banh-mi-thit-nuong', 'name': 'Bánh Mì Thịt Nướng', 'category': 'banh-mi', 'price': 690, 'desc': 'Bánh mì thịt heo nướng thơm.'}, {'id': 'banh-mi-ga', 'name': 'Bánh Mì Gà', 'category': 'banh-mi', 'price': 690, 'desc': 'Bánh mì gà nướng.'}, {'id': 'banh-mi-xa-xiu', 'name': 'Bánh Mì Xá Xíu', 'category': 'banh-mi', 'price': 690, 'desc': 'Bánh mì thịt heo xá xíu.'}, {'id': 'banh-mi-ca-ri-ga', 'name': 'Bánh Mì Cà Ri Gà', 'category': 'banh-mi', 'price': 690, 'desc': 'Gà cà ri dùng kèm bánh mì Pháp.'}, {'id': 'banh-mi-bo-kho', 'name': 'Bánh Mì Bò Kho', 'category': 'banh-mi', 'price': 790, 'desc': 'Bò kho Việt Nam dùng kèm bánh mì.'}, {'id': 'bun-cha', 'name': 'Bún Chả Giò Thịt/Tôm/Gà Nướng', 'category': 'bun', 'price': 890, 'desc': 'Bún với rau sống, dưa chua, giá, chả giò và lựa chọn thịt nướng, tôm hoặc gà.', 'badge': 'Bán chạy'}, {'id': 'bun-thit-ga-tom', 'name': 'Bún Thịt/Gà/Tôm Nướng', 'category': 'bun', 'price': 890, 'desc': 'Bún rau sống, bạc hà, dưa leo, cà rốt ngâm và đậu phộng.'}, {'id': 'bun-thit-nem', 'name': 'Bún Thịt Nem Nướng', 'category': 'bun', 'price': 890, 'desc': 'Thịt nướng và nem nướng dùng với bún.'}, {'id': 'bun-bo-xao-xa-ot', 'name': 'Bún Bò/Gà/Tôm Xào Xả Ớt', 'category': 'bun', 'price': 890, 'desc': 'Bún với bò, gà hoặc tôm xào sả ớt.'}, {'id': 'hu-tieu-mi', 'name': 'Hủ Tiếu Mì', 'category': 'bun', 'price': 890, 'desc': 'Hủ tiếu mì hải sản hoặc trứng.'}, {'id': 'com-bo-xao-luc-lac', 'name': 'Cơm Bò Xào Lúc Lắc', 'category': 'com', 'price': 990, 'desc': 'Bò xào bông cải, ớt chuông, hành tây và cơm trắng.', 'badge': 'Signature'}, {'id': 'com-bo-ga-tom-xao', 'name': 'Cơm Bò/Gà/Tôm Xào Sả Ớt', 'category': 'com', 'price': 990, 'desc': 'Bò, gà hoặc tôm xào sả ớt với cơm trắng.'}, {'id': 'com-ga-thit-tom-nuong', 'name': 'Cơm Gà/Thịt/Tôm Nướng', 'category': 'com', 'price': 990, 'desc': 'Cơm trắng, salad và lựa chọn món nướng.'}, {'id': 'com-tay-cam', 'name': 'Cơm Tay Cầm', 'category': 'com', 'price': 1090, 'desc': 'Cơm chiên kết hợp tôm, gà, bò xào rau củ trong thố nóng.'}, {'id': 'che-ba-mau', 'name': 'Chè Ba Màu', 'category': 'trang-mieng', 'price': 490, 'desc': 'Chè ba màu với thạch và nước cốt dừa.'}, {'id': 'kem-chuoi', 'name': 'Kem Chuối/Chiên', 'category': 'trang-mieng', 'price': 490, 'desc': 'Chuối chiên dùng kèm kem.'}, {'id': 'yogurt', 'name': 'Yogurt', 'category': 'trang-mieng', 'price': 390, 'desc': 'Sữa chua Việt Nam.'}, {'id': 'tofu-cuon-chay', 'name': 'Tofu Cuốn', 'category': 'chay', 'price': 690, 'desc': 'Đậu hũ chiên cuốn bánh tráng, rau sống và sốt đậu phộng.'}, {'id': 'banh-mi-chay', 'name': 'Bánh Mì Chay', 'category': 'chay', 'price': 590, 'desc': 'Đậu hũ, nấm xào cuốn bánh mì cùng rau và sốt.'}, {'id': 'goi-chay', 'name': 'Gỏi Chay', 'category': 'chay', 'price': 690, 'desc': 'Gỏi bắp cải với đậu hũ xào và đậu phộng.'}, {'id': 'pho-chay', 'name': 'Phở Chay', 'category': 'chay', 'price': 790, 'desc': 'Phở rau củ, đậu hũ, giá, húng quế và jalapeño.'}, {'id': 'bun-xao-chay', 'name': 'Bún Xào Chay', 'category': 'chay', 'price': 690, 'desc': 'Đậu hũ, bắp cải, cà rốt, mì gạo, dưa leo, rau xà lách và bạc hà.'}, {'id': 'mi-xao-chay', 'name': 'Mì Xào Chay', 'category': 'chay', 'price': 690, 'desc': 'Mì trứng xào đậu hũ và rau củ.'}, {'id': 'com-tay-cam-chay', 'name': 'Cơm Tay Cầm Chay', 'category': 'chay', 'price': 790, 'desc': 'Rau củ và đậu hũ xào trong thố nóng.'}]
-DEFAULT_SETTINGS={"restaurant_name":"Phở & Bánh Mì K&K","tagline":"AUTHENTIC VIETNAMESE CUISINE","phone":"510.666.9966","address":"Cập nhật địa chỉ nhà hàng trong Admin","maps_url":"https://www.google.com/maps/search/?api=1&query=Pho+%26+Banh+Mi+K%26K+510.666.9966","google_review_url":"","hero_title":"Hương vị Việt, trọn vẹn trong từng món.","delivery_note":"Đặt món online nhanh chóng • Thanh toán khi nhận hàng (COD)","hero_image":"/static/menu-board.png","logo_image":"","online_order_enabled":"0","currency":"USD","currency_symbol":"$","location_eyebrow":"LOCATION","location_heading":"Địa điểm K&K","location_title":"Ghé K&K thưởng thức món ngon","location_description":"K&K phục vụ phở, bánh mì và các món Việt quen thuộc. Quý khách có thể xem thực đơn trước khi ghé nhà hàng và liên hệ trực tiếp với K&K nếu cần hỗ trợ.","location_main_image":"/static/menu-board.png","location_side_image_1":"/uploads/banh-mi-dac-biet_9353a2073b16.png","location_side_image_2":"/uploads/pho-dac-biet_d3d371fb4ca8.png"}
+DEFAULT_SETTINGS={"restaurant_name":"Phở & Bánh Mì K&K","tagline":"AUTHENTIC VIETNAMESE CUISINE","phone":"510.666.9966","address":"Cập nhật địa chỉ nhà hàng trong Admin","maps_url":"https://www.google.com/maps/search/?api=1&query=Pho+%26+Banh+Mi+K%26K+510.666.9966","google_review_url":"","hero_title":"Hương vị Việt, trọn vẹn trong từng món.","delivery_note":"Đặt món online nhanh chóng • Thanh toán khi nhận hàng (COD)","hero_image":"/static/menu-board.png","logo_image":"","online_order_enabled":"0","booking_enabled":"0","currency":"USD","currency_symbol":"$","location_eyebrow":"LOCATION","location_heading":"Địa điểm K&K","location_title":"Ghé K&K thưởng thức món ngon","location_description":"K&K phục vụ phở, bánh mì và các món Việt quen thuộc. Quý khách có thể xem thực đơn trước khi ghé nhà hàng và liên hệ trực tiếp với K&K nếu cần hỗ trợ.","location_main_image":"/static/menu-board.png","location_side_image_1":"/uploads/banh-mi-dac-biet_9353a2073b16.png","location_side_image_2":"/uploads/pho-dac-biet_d3d371fb4ca8.png"}
 
 ORDER_STATUSES=["Mới","Đang chuẩn bị","Đang giao","Hoàn tất","Đã hủy"]
 BOOKING_STATUSES=["Mới","Đã xác nhận","Hoàn tất","Đã hủy"]
@@ -313,11 +313,15 @@ def global_security_guard():
     # Voucher chỉ phục vụ luồng đặt hàng, nên cũng phải tắt khi đặt hàng online đang tắt.
     if request.path == "/api/voucher" and request.method == "POST" and not online_order_enabled():
         return jsonify(ok=False,message="K&K hiện đang tạm ngưng đặt hàng trực tuyến."),403
-    # Tính năng trực tuyến dùng chung một công tắc: Đặt hàng + Đặt bàn + Theo dõi đơn.
-    if request.path in ("/book", "/track") and not online_order_enabled():
+    # Đặt bàn và Đặt hàng Online/Theo dõi đơn có công tắc độc lập.
+    if request.path == "/book" and not booking_enabled():
         return redirect("/")
-    if request.path in ("/api/bookings", "/api/track") and not online_order_enabled():
-        return jsonify(ok=False,message="K&K hiện đang tạm ngưng các tính năng trực tuyến. Quý khách vui lòng liên hệ K&K để được hỗ trợ."),403
+    if request.path == "/track" and not online_order_enabled():
+        return redirect("/")
+    if request.path == "/api/bookings" and not booking_enabled():
+        return jsonify(ok=False,message="K&K hiện đang tạm ngưng nhận đặt bàn trực tuyến."),403
+    if request.path == "/api/track" and not online_order_enabled():
+        return jsonify(ok=False,message="K&K hiện đang tạm ngưng theo dõi đơn hàng trực tuyến."),403
     if request.path.startswith("/api/bookings") and request.method=="POST":
         if not consume_rate_limit("booking"):
             return jsonify(ok=False,message="Bạn gửi quá nhiều yêu cầu đặt bàn. Vui lòng thử lại sau ít phút."),429
@@ -442,6 +446,11 @@ def init_db():
     if "idempotency_key" not in booking_cols:
         c.execute("ALTER TABLE bookings ADD COLUMN idempotency_key TEXT")
     c.execute("""CREATE TABLE IF NOT EXISTS settings(k TEXT PRIMARY KEY,v TEXT)""")
+    # V2.14 migration: tách công tắc Đặt bàn khỏi Đặt hàng Online/Theo dõi đơn.
+    if not c.execute("SELECT 1 FROM settings WHERE k='booking_enabled'").fetchone():
+        legacy_online = c.execute("SELECT v FROM settings WHERE k='online_order_enabled'").fetchone()
+        legacy_value = legacy_online["v"] if legacy_online else "0"
+        c.execute("INSERT INTO settings(k,v) VALUES('booking_enabled',?)", (legacy_value,))
     c.execute("""CREATE TABLE IF NOT EXISTS rate_limit_hits(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         scope TEXT NOT NULL,
@@ -535,8 +544,14 @@ def settings():
         data.setdefault(k,v)
     return data
 
+def _setting_enabled(name):
+    return str(settings().get(name, "0")).strip().lower() in ("1", "true", "yes", "on")
+
 def online_order_enabled():
-    return str(settings().get("online_order_enabled", "0")).strip().lower() in ("1", "true", "yes", "on")
+    return _setting_enabled("online_order_enabled")
+
+def booking_enabled():
+    return _setting_enabled("booking_enabled")
 
 def categories():
     c=conn(); rows=c.execute("SELECT * FROM categories WHERE active=1 ORDER BY sort_order,id").fetchall(); c.close()
@@ -552,6 +567,32 @@ def menu():
         ORDER BY c.sort_order,m.sort_order,m.name""").fetchall(); c.close()
     return [dict(r) for r in rows]
 
+def paginated_menu(page=1, limit=20, category="all", query=""):
+    """Return one page of active menu items with server-side filtering."""
+    try: page=max(int(page),1)
+    except (TypeError,ValueError): page=1
+    limit=20
+    category=(category or "all").strip()
+    query=(query or "").strip()
+    c=conn()
+    where=["m.active=1", "c.active=1"]
+    params=[]
+    if category and category != "all":
+        where.append("m.category=?"); params.append(category)
+    if query:
+        where.append("LOWER(m.name) LIKE ?"); params.append("%"+query.lower()+"%")
+    where_sql=" AND ".join(where)
+    total=int(c.execute(f"SELECT COUNT(*) n FROM menu_items m JOIN categories c ON c.id=m.category WHERE {where_sql}",params).fetchone()["n"])
+    pages=max((total+limit-1)//limit,1)
+    page=min(page,pages)
+    offset=(page-1)*limit
+    rows=c.execute(f"""SELECT m.* FROM menu_items m
+        JOIN categories c ON c.id=m.category
+        WHERE {where_sql}
+        ORDER BY c.sort_order,m.sort_order,m.name LIMIT ? OFFSET ?""",params+[limit,offset]).fetchall()
+    c.close()
+    return [dict(r) for r in rows], total, page, pages
+
 def featured_menu():
     c=conn(); rows=c.execute("""SELECT m.* FROM menu_items m
         JOIN categories c ON c.id=m.category
@@ -561,7 +602,7 @@ def featured_menu():
 
 @app.context_processor
 def inject():
-    return {"s":settings(),"restaurant_name":"Phở & Bánh Mì K&K","online_order_enabled":online_order_enabled()}
+    return {"s":settings(),"restaurant_name":"Phở & Bánh Mì K&K","online_order_enabled":online_order_enabled(),"booking_enabled":booking_enabled()}
 
 @app.route("/")
 def home():
@@ -569,7 +610,13 @@ def home():
     return render_template("index.html",menu=featured or menu()[:8],categories=category_choices())
 
 @app.route("/menu")
-def menu_page(): return render_template("menu.html",menu=menu(),categories=[("all","Tất cả")]+category_choices())
+def menu_page():
+    category=(request.args.get("category") or "all").strip()
+    query=(request.args.get("q") or "").strip()
+    page=request.args.get("page",1)
+    menu_items,total,page,pages=paginated_menu(page,20,category,query)
+    return render_template("menu.html",menu=menu_items,categories=[("all","Tất cả")]+category_choices(),
+                           menu_total=total,menu_page=page,menu_pages=pages,menu_category=category,menu_query=query)
 
 @app.route("/checkout")
 def checkout(): return render_template("checkout.html")
@@ -579,6 +626,14 @@ def track(): return render_template("track.html")
 
 @app.route("/book")
 def book(): return render_template("book.html")
+
+@app.route("/booking-success")
+def booking_success():
+    booking_id=(request.args.get("booking_id") or "").strip()
+    # Only display a numeric booking id; the actual booking data remains in Admin.
+    if not booking_id.isdigit():
+        booking_id=""
+    return render_template("booking_success.html", booking_id=booking_id)
 
 def calculate_voucher(code, subtotal):
     """Return (ok, discount, message) using only server-side voucher data."""
@@ -767,8 +822,18 @@ def api_track():
 
 def admin_context():
     c=conn()
-    orders=c.execute("SELECT * FROM orders ORDER BY id DESC").fetchall()
-    bookings=c.execute("SELECT * FROM bookings ORDER BY id DESC").fetchall()
+    limit=20
+    def page_arg(name):
+        try: return max(int(request.args.get(name,1)),1)
+        except (TypeError,ValueError): return 1
+    orders_total=int(c.execute("SELECT COUNT(*) n FROM orders").fetchone()["n"])
+    bookings_total=int(c.execute("SELECT COUNT(*) n FROM bookings").fetchone()["n"])
+    orders_pages=max((orders_total+limit-1)//limit,1)
+    bookings_pages=max((bookings_total+limit-1)//limit,1)
+    orders_page=min(page_arg("orders_page"),orders_pages)
+    bookings_page=min(page_arg("bookings_page"),bookings_pages)
+    orders=c.execute("SELECT * FROM orders ORDER BY id DESC LIMIT ? OFFSET ?",(limit,(orders_page-1)*limit)).fetchall()
+    bookings=c.execute("SELECT * FROM bookings ORDER BY id DESC LIMIT ? OFFSET ?",(limit,(bookings_page-1)*limit)).fetchall()
     vouchers=[dict(r) for r in c.execute("SELECT * FROM vouchers ORDER BY code").fetchall()]
     items=[dict(r) for r in c.execute("SELECT * FROM menu_items ORDER BY sort_order,category,name").fetchall()]
     cats=[dict(r) for r in c.execute("SELECT * FROM categories ORDER BY sort_order,id").fetchall()]
@@ -793,7 +858,9 @@ def admin_context():
         site_settings.setdefault(k,v)
     c.close()
     account=get_admin_account()
-    return dict(orders=orders, bookings=bookings, vouchers=vouchers, items=items, cats=cats,
+    return dict(orders=orders, bookings=bookings, orders_total=orders_total, bookings_total=bookings_total,
+                orders_page=orders_page, orders_pages=orders_pages, bookings_page=bookings_page, bookings_pages=bookings_pages,
+                vouchers=vouchers, items=items, cats=cats,
                 categories=category_options, category_names=category_names,
                 category_groups=category_groups, featured_items=featured_items, featured_count=featured_count,
                 site_settings=site_settings, admin_account=account,
@@ -1565,12 +1632,14 @@ def settings_save():
 
     # Lấy dữ liệu form trước khi xử lý file để hoạt động ổn định với AJAX FormData.
     location_image_keys=("location_main_image","location_side_image_1","location_side_image_2")
-    values={k:(request.form.get(k) or "").strip() for k in DEFAULT_SETTINGS if k not in ("hero_image", "logo_image", "online_order_enabled", *location_image_keys)}
+    values={k:(request.form.get(k) or "").strip() for k in DEFAULT_SETTINGS if k not in ("hero_image", "logo_image", "online_order_enabled", "booking_enabled", *location_image_keys)}
     values["maps_url"]=(request.form.get("maps_url") or "").strip()
     # Checkbox gửi kèm hidden value 0 để khi bỏ chọn vẫn lưu được trạng thái tắt.
     # Dùng getlist() vì form có cả hidden input và checkbox cùng name.
     order_values=request.form.getlist("online_order_enabled")
+    booking_values=request.form.getlist("booking_enabled")
     values["online_order_enabled"]="1" if any(str(v).strip().lower() in ("1","true","yes","on") for v in order_values) else "0"
+    values["booking_enabled"]="1" if any(str(v).strip().lower() in ("1","true","yes","on") for v in booking_values) else "0"
     current=request.form.get("hero_image") or DEFAULT_SETTINGS["hero_image"]
     logo_current=request.form.get("logo_image") or DEFAULT_SETTINGS.get("logo_image","")
     location_current={k:(request.form.get(k) or DEFAULT_SETTINGS[k]) for k in location_image_keys}
@@ -1723,12 +1792,66 @@ def admin_health():
     checks["overall"]=all(checks.get(k,False) for k in core_keys)
     return jsonify(ok=checks["overall"],checks=checks)
 
+@app.get("/admin/export/orders.xlsx")
+def admin_export_orders():
+    if not session.get("admin"):
+        return jsonify(ok=False,message="Unauthorized"),401
+    if load_workbook is None:
+        return jsonify(ok=False,message="Chưa cài thư viện openpyxl để xuất Excel."),500
+    c=conn()
+    try:
+        rows=c.execute("SELECT order_code,customer_name,phone,address,note,items,subtotal,discount,total,payment_method,payment_status,status,created_at FROM orders ORDER BY id DESC").fetchall()
+    finally:
+        c.close()
+    from openpyxl import Workbook
+    from openpyxl.styles import Font, Alignment
+    wb=Workbook(); ws=wb.active; ws.title="Đơn hàng"
+    headers=["Mã đơn","Khách hàng","Điện thoại","Địa chỉ","Ghi chú","Món đặt","Tạm tính","Giảm giá","Tổng tiền","Phương thức TT","Thanh toán","Trạng thái","Ngày tạo"]
+    ws.append(headers)
+    for cell in ws[1]: cell.font=Font(bold=True); cell.alignment=Alignment(horizontal="center")
+    for r in rows:
+        ws.append([r["order_code"],r["customer_name"],r["phone"],r["address"],r["note"],r["items"],(r["subtotal"] or 0)/100,(r["discount"] or 0)/100,(r["total"] or 0)/100,r["payment_method"],r["payment_status"],r["status"],r["created_at"]])
+    for col in (7,8,9):
+        for cell in ws.iter_cols(min_col=col,max_col=col,min_row=2):
+            for c2 in cell: c2.number_format='0.00'
+    widths=[18,22,16,32,28,42,14,14,14,18,16,20,20]
+    for i,w in enumerate(widths,1): ws.column_dimensions[chr(64+i) if i<=26 else 'A'].width=w
+    ws.freeze_panes="A2"; ws.auto_filter.ref=ws.dimensions
+    out=io.BytesIO(); wb.save(out); out.seek(0)
+    audit_log("EXPORT","order","bulk",{"count":len(rows)})
+    return send_file(out,as_attachment=True,download_name="don-hang.xlsx",mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+
+@app.get("/admin/export/bookings.xlsx")
+def admin_export_bookings():
+    if not session.get("admin"):
+        return jsonify(ok=False,message="Unauthorized"),401
+    if load_workbook is None:
+        return jsonify(ok=False,message="Chưa cài thư viện openpyxl để xuất Excel."),500
+    c=conn()
+    try:
+        rows=c.execute("SELECT name,phone,booking_date,booking_time,guests,note,status,created_at FROM bookings ORDER BY id DESC").fetchall()
+    finally:
+        c.close()
+    from openpyxl import Workbook
+    from openpyxl.styles import Font, Alignment
+    wb=Workbook(); ws=wb.active; ws.title="Đặt bàn"
+    headers=["Khách hàng","Điện thoại","Ngày đặt","Giờ đặt","Số khách","Ghi chú","Trạng thái","Ngày tạo"]
+    ws.append(headers)
+    for cell in ws[1]: cell.font=Font(bold=True); cell.alignment=Alignment(horizontal="center")
+    for r in rows: ws.append([r["name"],r["phone"],r["booking_date"],r["booking_time"],r["guests"],r["note"],r["status"],r["created_at"]])
+    widths=[24,18,14,12,12,40,20,20]
+    for i,w in enumerate(widths,1): ws.column_dimensions[chr(64+i)].width=w
+    ws.freeze_panes="A2"; ws.auto_filter.ref=ws.dimensions
+    out=io.BytesIO(); wb.save(out); out.seek(0)
+    audit_log("EXPORT","booking","bulk",{"count":len(rows)})
+    return send_file(out,as_attachment=True,download_name="dat-ban.xlsx",mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+
 @app.get("/admin/audit-logs")
 def admin_audit_logs():
     if not session.get("admin"):
         return jsonify(ok=False,message="Unauthorized"),401
     try:
-        limit=min(max(int(request.args.get("limit",100)),1),500)
+        limit=min(max(int(request.args.get("limit",20)),1),100)
     except (TypeError, ValueError):
         limit=100
     try:
@@ -1762,8 +1885,10 @@ def sitemap():
     h=request.url_root.rstrip("/")
     xml='<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'
     paths=["/","/menu"]
+    if booking_enabled():
+        paths.append("/book")
     if online_order_enabled():
-        paths += ["/book","/track"]
+        paths.append("/track")
     for path in paths:
         xml += f"<url><loc>{h}{path}</loc></url>"
     xml += "</urlset>"

@@ -3,6 +3,7 @@
 
   let dragItem = null;
   let refreshTimer = null;
+  let auditPage = 1;
 
   function qs(s, root=document){ return root.querySelector(s); }
   function qsa(s, root=document){ return [...root.querySelectorAll(s)]; }
@@ -74,7 +75,7 @@
     const scrollY = window.scrollY;
     root.classList.add('admin-refreshing');
     try{
-      const res = await fetch('/admin?partial=1', {credentials:'same-origin', headers:{'X-Requested-With':'XMLHttpRequest','Accept':'text/html'}});
+      const res = await fetch('/admin?partial=1'+(window.location.search || ''), {credentials:'same-origin', headers:{'X-Requested-With':'XMLHttpRequest','Accept':'text/html'}});
       if(res.status===401 || res.redirected){ window.location.href='/admin'; return; }
       if(!res.ok) throw new Error('Không thể tải lại dữ liệu Admin.');
       const html = await res.text();
@@ -319,6 +320,23 @@
     return labels[type] || type || '—';
   }
 
+  function renderAuditPagination(page,pages){
+    const box=qs('#auditPagination');
+    if(!box) return;
+    auditPage=page;
+    if(pages<=1){ box.innerHTML=''; return; }
+    let html='';
+    if(page>1) html+='<button type="button" class="admin-page-btn" data-audit-page="'+(page-1)+'">← Trước</button>';
+    for(let p=1;p<=pages;p++){
+      if(p===page) html+='<span class="active">'+p+'</span>';
+      else if(p===1 || p===pages || (p>=page-2 && p<=page+2)) html+='<button type="button" class="admin-page-btn" data-audit-page="'+p+'">'+p+'</button>';
+      else if(p===page-3 || p===page+3) html+='<span class="dots">…</span>';
+    }
+    if(page<pages) html+='<button type="button" class="admin-page-btn" data-audit-page="'+(page+1)+'">Sau →</button>';
+    box.innerHTML=html;
+    qsa('[data-audit-page]',box).forEach(btn=>btn.addEventListener('click',()=>{auditPage=parseInt(btn.dataset.auditPage,10)||1;loadAuditLog();}));
+  }
+
   async function loadAuditLog(){
     const health=qs('#auditHealth');
     const tbody=qs('#auditLogTable tbody');
@@ -330,7 +348,7 @@
     try{
       const [healthRes, logData] = await Promise.all([
         fetch('/admin/health',{credentials:'same-origin',headers:{'X-Requested-With':'XMLHttpRequest','Accept':'application/json'}}),
-        ajaxRequest('/admin/audit-logs?limit=100',{method:'GET'})
+        ajaxRequest('/admin/audit-logs?limit=20&page='+auditPage,{method:'GET'})
       ]);
 
       if(!healthRes.ok) throw new Error('Không thể kiểm tra trạng thái hệ thống.');
@@ -349,6 +367,8 @@
       }else{
         tbody.innerHTML='<tr><td colspan="5" class="muted">Chưa có nhật ký quản trị.</td></tr>';
       }
+
+      renderAuditPagination(logData.page || 1, logData.pages || 1);
 
       if(health){
         const c=healthData.checks||{};
@@ -560,7 +580,7 @@ function bindAdmin(){
     const auditBtn=qs('#refreshAuditLog');
     if(auditBtn && !auditBtn.dataset.bound){
       auditBtn.dataset.bound='1';
-      auditBtn.addEventListener('click',loadAuditLog);
+      auditBtn.addEventListener('click',()=>{auditPage=1;loadAuditLog();});
     }
     if((window.location.hash || '#overview') === '#audit') loadAuditLog();
     const root=qs('#adminRoot'); if(!root)return;

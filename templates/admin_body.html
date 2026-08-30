@@ -9,8 +9,8 @@
   </div>
   <nav class="admin-nav">
     <a href="#overview" data-admin-nav><span class="nav-icon">⌂</span><span>Tổng quan</span></a>
-    <a href="#orders" data-admin-nav><span class="nav-icon">▣</span><span>Đơn hàng</span><b>{{orders|length}}</b></a>
-    <a href="#bookings" data-admin-nav><span class="nav-icon">◷</span><span>Đặt bàn</span><b>{{bookings|length}}</b></a>
+    <a href="#orders" data-admin-nav><span class="nav-icon">▣</span><span>Đơn hàng</span><b>{{orders_total}}</b></a>
+    <a href="#bookings" data-admin-nav><span class="nav-icon">◷</span><span>Đặt bàn</span><b>{{bookings_total}}</b></a>
     <div class="admin-nav-group-label">THỰC ĐƠN</div>
     <a href="#menu" data-admin-nav><span class="nav-icon">☷</span><span>Quản lý món ăn</span></a>
     <a href="#featured" data-admin-nav><span class="nav-icon">★</span><span>Món nổi bật</span><b>{{featured_items|length}}</b></a>
@@ -31,15 +31,15 @@
   <button type="button" class="btn outline admin-menu-toggle">☰ Menu quản trị</button>
 </div>
 <div id="overview" class="admin-overview-anchor">
-<div class="stats"><div><span>Đơn hàng</span><b>{{orders|length}}</b></div><div><span>Đặt bàn</span><b>{{bookings|length}}</b></div><div><span>Món đang bán</span><b>{{items|selectattr('active','equalto',1)|list|length}}</b></div></div>
+<div class="stats"><div><span>Đơn hàng</span><b>{{orders_total}}</b></div><div><span>Đặt bàn</span><b>{{bookings_total}}</b></div><div><span>Món đang bán</span><b>{{items|selectattr('active','equalto',1)|list|length}}</b></div></div>
 </div>
-<section id="orders" class="admin-section"><h2>Đơn hàng</h2><div class="tablewrap"><table><tr><th>Mã</th><th>Khách</th><th>Tổng</th><th>Thanh toán</th><th>Trạng thái</th><th>Ngày</th></tr>
+<section id="orders" class="admin-section"><div class="section-title-row"><div><h2>Đơn hàng</h2><p class="muted">Hiển thị tối đa 20 đơn hàng mỗi trang.</p></div><a class="btn outline" href="/admin/export/orders.xlsx">📊 Xuất Excel</a></div><div class="tablewrap"><table><tr><th>Mã</th><th>Khách</th><th>Tổng</th><th>Thanh toán</th><th>Trạng thái</th><th>Ngày</th></tr>
 {% for o in orders %}<tr><td><b>{{o.order_code}}</b></td><td>{{o.customer_name}}<br>{{o.phone}}</td><td>{{o.total|money}}</td><td>{{o.payment_status}}</td><td><select data-status-url="/admin/order/{{o.id}}/status">{% for st in ['Mới','Đang chuẩn bị','Đang giao','Hoàn tất','Đã hủy'] %}<option {% if o.status==st %}selected{% endif %}>{{st}}</option>{% endfor %}</select></td><td>{{o.created_at}}</td></tr>{% endfor %}
-</table></div></section>
+</table></div>{% if orders_pages > 1 %}<nav class="admin-pagination" aria-label="Phân trang đơn hàng">{% if orders_page > 1 %}<a href="{{ url_for('admin', orders_page=orders_page-1, bookings_page=bookings_page) }}#orders">← Trước</a>{% endif %}{% for p in range(1, orders_pages+1) %}{% if p == orders_page %}<span class="active">{{p}}</span>{% elif p == 1 or p == orders_pages or (p >= orders_page-2 and p <= orders_page+2) %}<a href="{{ url_for('admin', orders_page=p, bookings_page=bookings_page) }}#orders">{{p}}</a>{% elif p == orders_page-3 or p == orders_page+3 %}<span class="dots">…</span>{% endif %}{% endfor %}{% if orders_page < orders_pages %}<a href="{{ url_for('admin', orders_page=orders_page+1, bookings_page=bookings_page) }}#orders">Sau →</a>{% endif %}</nav>{% endif %}</section>
 
-<section id="bookings" class="admin-section"><h2>Đặt bàn</h2><div class="tablewrap"><table><tr><th>Khách</th><th>Ngày/Giờ</th><th>Số khách</th><th>Ghi chú</th><th>Trạng thái</th></tr>
+<section id="bookings" class="admin-section"><div class="section-title-row"><div><h2>Đặt bàn</h2><p class="muted">Hiển thị tối đa 20 lượt đặt bàn mỗi trang.</p></div><a class="btn outline" href="/admin/export/bookings.xlsx">📊 Xuất Excel</a></div><div class="tablewrap"><table><tr><th>Khách</th><th>Ngày/Giờ</th><th>Số khách</th><th>Ghi chú</th><th>Trạng thái</th></tr>
 {% for b in bookings %}<tr><td>{{b.name}}<br>{{b.phone}}</td><td>{{b.booking_date}} {{b.booking_time}}</td><td>{{b.guests}}</td><td>{{b.note}}</td><td><select data-status-url="/admin/booking/{{b.id}}/status">{% for st in ['Mới','Đã xác nhận','Hoàn tất','Đã hủy'] %}<option {% if b.status==st %}selected{% endif %}>{{st}}</option>{% endfor %}</select></td></tr>{% endfor %}
-</table></div></section>
+</table></div>{% if bookings_pages > 1 %}<nav class="admin-pagination" aria-label="Phân trang đặt bàn">{% if bookings_page > 1 %}<a href="{{ url_for('admin', orders_page=orders_page, bookings_page=bookings_page-1) }}#bookings">← Trước</a>{% endif %}{% for p in range(1, bookings_pages+1) %}{% if p == bookings_page %}<span class="active">{{p}}</span>{% elif p == 1 or p == bookings_pages or (p >= bookings_page-2 and p <= bookings_page+2) %}<a href="{{ url_for('admin', orders_page=orders_page, bookings_page=p) }}#bookings">{{p}}</a>{% elif p == bookings_page-3 or p == bookings_page+3 %}<span class="dots">…</span>{% endif %}{% endfor %}{% if bookings_page < bookings_pages %}<a href="{{ url_for('admin', orders_page=orders_page, bookings_page=bookings_page+1) }}#bookings">Sau →</a>{% endif %}</nav>{% endif %}</section>
 
 <section id="menu" class="admin-section"><div class="section-title-row"><div><h2>Quản lý món ăn</h2><p class="muted">Thêm, sửa, xóa món; thay đổi giá, danh mục, ảnh, badge và trạng thái bán.</p></div><div class="menu-head-actions"><button class="btn outline" type="button" onclick="openMenuImport()">📥 Import Excel</button><a class="btn outline" href="/admin/menu/import-template" data-ajax="false">📄 Tải mẫu Excel</a><button class="btn green" onclick="openAddDish()">＋ Thêm món mới</button></div></div>
 <div class="menu-tools"><input id="dishSearch" placeholder="⌕ Tìm tên món..."><select id="dishCat"><option value="all">Tất cả danh mục</option>{% for k,l in categories %}{% if k!='all' %}<option value="{{k}}">{{l}}</option>{% endif %}{% endfor %}</select><button type="button" class="btn outline category-toggle-all" onclick="toggleAllCategories()">⌄ Mở/thu gọn</button></div>
@@ -191,6 +191,7 @@
         <tbody><tr><td colspan="5" class="muted">Chưa tải nhật ký.</td></tr></tbody>
       </table>
     </div>
+    <div id="auditPagination" class="admin-pagination" style="margin-top:14px"></div>
   </div>
 </section>
 <section id="settings" class="admin-section">
@@ -239,16 +240,23 @@
     {% endfor %}
   </div>
 </div>
-<div class="settings-order-control" style="margin-top:20px;padding:18px 20px;border:1px solid #e5e7eb;border-radius:14px;background:#fafafa;display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap">
-  <div>
-    <h3 style="margin:0 0 5px">🛒 Đặt hàng trực tuyến</h3>
-    <p class="muted" style="margin:0;line-height:1.5">Bật/tắt các tính năng trực tuyến của website. Khi <strong>bật</strong>: khách có thể Đặt hàng, Đặt bàn và Theo dõi đơn. Khi <strong>tắt</strong>: cả 3 tính năng này sẽ được ẩn và tạm ngưng.</p>
+<div class="settings-order-control" style="margin-top:20px;padding:18px 20px;border:1px solid #e5e7eb;border-radius:14px;background:#fafafa">
+  <div style="margin-bottom:16px">
+    <h3 style="margin:0 0 5px">🛒 Tính năng trực tuyến</h3>
+    <p class="muted" style="margin:0;line-height:1.5">Bật/tắt độc lập từng tính năng. Bạn có thể cho khách <strong>Đặt bàn</strong> mà không cần bật đặt hàng online, hoặc chỉ bật <strong>Đặt hàng Online + Theo dõi đơn</strong>.</p>
   </div>
-  <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-weight:700;white-space:nowrap">
-    <input type="hidden" name="online_order_enabled" value="0">
-    <input type="checkbox" name="online_order_enabled" value="1" {% if site_settings.get('online_order_enabled','0') in ['1','true','yes','on'] %}checked{% endif %} style="width:20px;height:20px;accent-color:#16a34a">
-    <span>{% if site_settings.get('online_order_enabled','0') in ['1','true','yes','on'] %}Đang bật{% else %}Đang tắt{% endif %}</span>
-  </label>
+  <div class="online-feature-grid">
+    <label style="display:flex;align-items:center;gap:12px;cursor:pointer;font-weight:700;padding:14px 16px;border:1px solid #e5e7eb;border-radius:12px;background:#fff">
+      <input type="hidden" name="booking_enabled" value="0">
+      <input type="checkbox" name="booking_enabled" value="1" {% if site_settings.get('booking_enabled','0') in ['1','true','yes','on'] %}checked{% endif %} style="width:20px;height:20px;accent-color:#16a34a">
+      <span>Đặt bàn</span>
+    </label>
+    <label style="display:flex;align-items:center;gap:12px;cursor:pointer;font-weight:700;padding:14px 16px;border:1px solid #e5e7eb;border-radius:12px;background:#fff">
+      <input type="hidden" name="online_order_enabled" value="0">
+      <input type="checkbox" name="online_order_enabled" value="1" {% if site_settings.get('online_order_enabled','0') in ['1','true','yes','on'] %}checked{% endif %} style="width:20px;height:20px;accent-color:#16a34a">
+      <span>Đặt hàng Online (Theo dõi đơn)</span>
+    </label>
+  </div>
 </div>
 <div class="form-actions"><button class="btn green">✓ Lưu cài đặt</button></div></form></section>
 </main>

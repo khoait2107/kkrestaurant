@@ -30,6 +30,8 @@ def main():
     results.append(check("Required tables", required.issubset(tables)))
     indexes={r["name"] for r in c.execute("SELECT name FROM sqlite_master WHERE type='index'").fetchall()}
     results.append(check("Booking idempotency index", "idx_bookings_idempotency" in indexes))
+    setting_keys={r["k"] for r in c.execute("SELECT k FROM settings").fetchall()}
+    results.append(check("Independent feature settings", {"online_order_enabled","booking_enabled"}.issubset(setting_keys)))
     c.close()
     backups=os.path.join(BASE,"backups")
     newest=max((os.path.join(backups,x) for x in os.listdir(backups) if x.startswith("kk_") and x.endswith(".db")),key=os.path.getmtime,default=None) if os.path.isdir(backups) else None

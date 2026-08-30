@@ -1,26 +1,59 @@
-2026-08-17 14:22:19,870 INFO Database backup created: D:\BELUYEN\kkrestaurant_v2.15_excel_import\kkrestaurant\backups\kk_2026-08-17_14-22-19.db
-2026-08-17 14:22:19,894 INFO Database backup created: D:\BELUYEN\kkrestaurant_v2.15_excel_import\kkrestaurant\backups\kk_2026-08-17_14-22-19.db
-2026-08-17 14:23:23,250 INFO Database backup created: D:\BELUYEN\kkrestaurant_v2.15_excel_import\kkrestaurant\backups\kk_2026-08-17_14-23-23.db
-2026-08-17 14:23:23,262 INFO Database backup created: D:\BELUYEN\kkrestaurant_v2.15_excel_import\kkrestaurant\backups\kk_2026-08-17_14-23-23.db
-2026-08-17 16:14:04,217 INFO Database backup created: D:\BELUYEN\kkrestaurant_v2.15_excel_import\kkrestaurant\backups\kk_2026-08-17_16-14-04.db
-2026-08-17 16:14:04,226 INFO Database backup created: D:\BELUYEN\kkrestaurant_v2.15_excel_import\kkrestaurant\backups\kk_2026-08-17_16-14-04.db
-2026-08-17 16:28:03,002 INFO Database backup created: D:\BELUYEN\kkrestaurant_v2.15_excel_import\kkrestaurant\backups\kk_2026-08-17_16-28-02.db
-2026-08-17 16:28:03,005 ERROR Menu Excel import failed
+2026-08-30 01:42:10,230 INFO Database backup created: /tmp/kk/backups/kk_2026-08-30_01-42-10.db
+2026-08-30 01:42:10,233 INFO Database backup created: /tmp/kk/backups/kk_2026-08-30_01-42-10.db
+2026-08-30 01:42:10,242 ERROR audit_log failed
 Traceback (most recent call last):
-  File "D:\BELUYEN\kkrestaurant_v2.15_excel_import\kkrestaurant\app.py", line 1359, in menu_import_commit
-    raise ValueError("Import tạo ra hơn 8 món nổi bật. Hãy giảm Featured=Yes xuống tối đa 8 món rồi thử lại.")
-ValueError: Import tạo ra hơn 8 món nổi bật. Hãy giảm Featured=Yes xuống tối đa 8 món rồi thử lại.
-2026-08-17 16:28:50,951 INFO Database backup created: D:\BELUYEN\kkrestaurant_v2.15_excel_import\kkrestaurant\backups\kk_2026-08-17_16-28-50.db
-2026-08-17 16:30:05,179 INFO Database backup created: D:\BELUYEN\kkrestaurant\backups\kk_2026-08-17_16-30-05.db
-2026-08-17 16:30:05,189 INFO Database backup created: D:\BELUYEN\kkrestaurant\backups\kk_2026-08-17_16-30-05.db
-2026-08-17 17:04:39,572 INFO Database backup created: D:\BELUYEN\kkrestaurant\backups\kk_2026-08-17_17-04-39.db
-2026-08-18 09:19:21,120 INFO Database backup created: D:\BELUYEN\kkrestaurant\backups\kk_2026-08-18_09-19-21.db
-2026-08-18 09:19:21,130 INFO Database backup created: D:\BELUYEN\kkrestaurant\backups\kk_2026-08-18_09-19-21.db
-2026-08-20 16:09:53,978 INFO Database backup created: D:\BELUYEN\kkrestaurant\backups\kk_2026-08-20_16-09-53.db
-2026-08-20 16:09:54,002 INFO Database backup created: D:\BELUYEN\kkrestaurant\backups\kk_2026-08-20_16-09-53.db
-2026-08-23 10:35:05,361 INFO Database backup created: D:\BELUYEN\kkrestaurant\backups\kk_2026-08-23_10-35-05.db
-2026-08-23 10:35:05,375 INFO Database backup created: D:\BELUYEN\kkrestaurant\backups\kk_2026-08-23_10-35-05.db
-2026-08-29 09:35:29,177 INFO Database backup created: D:\BELUYEN\kkrestaurant\backups\kk_2026-08-29_09-35-29.db
-2026-08-29 09:35:29,187 INFO Database backup created: D:\BELUYEN\kkrestaurant\backups\kk_2026-08-29_09-35-29.db
-2026-08-29 10:31:37,125 INFO Database backup created: D:\BELUYEN\kkrestaurant_fixed_with_git_venv_2026-08-29\kkrestaurant\backups\kk_2026-08-29_10-31-37.db
-2026-08-29 10:31:37,135 INFO Database backup created: D:\BELUYEN\kkrestaurant_fixed_with_git_venv_2026-08-29\kkrestaurant\backups\kk_2026-08-29_10-31-37.db
+  File "/tmp/kk/app.py", line 162, in audit_log
+    (datetime.now().strftime("%Y-%m-%d %H:%M:%S"),username,client_ip(),
+                                                           ~~~~~~~~~^^
+  File "/tmp/kk/app.py", line 127, in client_ip
+    return request.remote_addr or "unknown"
+           ^^^^^^^^^^^^^^^^^^^
+AttributeError: 'Req' object has no attribute 'remote_addr'
+2026-08-30 01:42:14,518 INFO Database backup created: /tmp/kk/backups/kk_2026-08-30_01-42-14.db
+2026-08-30 01:42:14,520 INFO Database backup created: /tmp/kk/backups/kk_2026-08-30_01-42-14.db
+2026-08-30 01:42:14,528 ERROR audit_log failed
+Traceback (most recent call last):
+  File "/tmp/kk/app.py", line 162, in audit_log
+    (datetime.now().strftime("%Y-%m-%d %H:%M:%S"),username,client_ip(),
+                                                           ~~~~~~~~~^^
+  File "/tmp/kk/app.py", line 127, in client_ip
+    return request.remote_addr or "unknown"
+           ^^^^^^^^^^^^^^^^^^^
+AttributeError: 'Req' object has no attribute 'remote_addr'
+2026-08-30 01:42:14,536 ERROR audit_log failed
+Traceback (most recent call last):
+  File "/tmp/kk/app.py", line 162, in audit_log
+    (datetime.now().strftime("%Y-%m-%d %H:%M:%S"),username,client_ip(),
+                                                           ~~~~~~~~~^^
+  File "/tmp/kk/app.py", line 127, in client_ip
+    return request.remote_addr or "unknown"
+           ^^^^^^^^^^^^^^^^^^^
+AttributeError: 'Req' object has no attribute 'remote_addr'
+2026-08-30 01:42:39,830 INFO Database backup created: /tmp/kk/backups/kk_2026-08-30_01-42-39.db
+2026-08-30 01:42:39,832 INFO Database backup created: /tmp/kk/backups/kk_2026-08-30_01-42-39.db
+2026-08-30 01:42:43,809 INFO Database backup created: /tmp/kk/backups/kk_2026-08-30_01-42-43.db
+2026-08-30 01:42:43,810 INFO Database backup created: /tmp/kk/backups/kk_2026-08-30_01-42-43.db
+2026-08-30 01:42:53,122 INFO Database backup created: /tmp/kk/backups/kk_2026-08-30_01-42-53.db
+2026-08-30 01:42:53,124 INFO Database backup created: /tmp/kk/backups/kk_2026-08-30_01-42-53.db
+2026-08-30 01:42:56,918 INFO Database backup created: /tmp/kk/backups/kk_2026-08-30_01-42-56.db
+2026-08-30 01:42:56,920 INFO Database backup created: /tmp/kk/backups/kk_2026-08-30_01-42-56.db
+2026-08-30 01:43:13,804 INFO Database backup created: /tmp/kk/backups/kk_2026-08-30_01-43-13.db
+2026-08-30 01:43:13,806 INFO Database backup created: /tmp/kk/backups/kk_2026-08-30_01-43-13.db
+2026-08-30 01:43:13,819 ERROR audit_log failed
+Traceback (most recent call last):
+  File "/tmp/kk/app.py", line 162, in audit_log
+    (datetime.now().strftime("%Y-%m-%d %H:%M:%S"),username,client_ip(),
+                                                           ~~~~~~~~~^^
+  File "/tmp/kk/app.py", line 127, in client_ip
+    return request.remote_addr or "unknown"
+           ^^^^^^^^^^^^^^^^^^^
+AttributeError: 'Req' object has no attribute 'remote_addr'
+2026-08-30 01:43:13,826 ERROR audit_log failed
+Traceback (most recent call last):
+  File "/tmp/kk/app.py", line 162, in audit_log
+    (datetime.now().strftime("%Y-%m-%d %H:%M:%S"),username,client_ip(),
+                                                           ~~~~~~~~~^^
+  File "/tmp/kk/app.py", line 127, in client_ip
+    return request.remote_addr or "unknown"
+           ^^^^^^^^^^^^^^^^^^^
+AttributeError: 'Req' object has no attribute 'remote_addr'
