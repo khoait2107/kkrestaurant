@@ -128,6 +128,22 @@
     };
   }
 
+  function setupAboutImagePreview(){
+    const input=qs('#aboutImageFile'), preview=qs('#aboutImagePreview');
+    if(!input || !preview) return;
+    input.onchange=()=>{
+      const file=input.files && input.files[0];
+      if(!file) return;
+      if(!['image/jpeg','image/png','image/webp'].includes(file.type)){
+        adminToast('Vui lòng chọn ảnh JPG, PNG hoặc WEBP.','warning','Ảnh Giới thiệu chưa hợp lệ');
+        input.value=''; return;
+      }
+      const url=URL.createObjectURL(file);
+      preview.src=url;
+      preview.onload=()=>URL.revokeObjectURL(url);
+    };
+  }
+
   function setupLocationImagePreviews(){
     ['location_main_image','location_side_image_1','location_side_image_2'].forEach(key=>{
       const input=qs('#'+key+'_file'), preview=qs('#'+key+'_preview img');
@@ -173,7 +189,7 @@
       await ajaxRequest(action,{method,body,headers:{'X-Requested-With':'XMLHttpRequest','Accept':'application/json'}});
       if(form.id==='dishForm') window.closeDish?.();
       if(form.closest('#voucherModal')) window.closeVoucher?.();
-      adminToast('Đã lưu thay đổi.','success','Cập nhật thành công');
+      adminToast('Đã lưu mục cài đặt.','success','Cập nhật thành công');
       await refreshAdmin({hash:form.dataset.refreshHash || window.location.hash || '#orders'});
     }catch(err){
       adminToast(err.message,'error','Thao tác thất bại');
@@ -575,6 +591,7 @@ function bindAdmin(){
     setupAdminSidebar();
     setupHeroBannerPreview();
     setupLocationImagePreviews();
+    setupAboutImagePreview();
     updateFeaturedCount();
 
     const auditBtn=qs('#refreshAuditLog');

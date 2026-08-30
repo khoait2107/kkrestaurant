@@ -113,7 +113,7 @@ if not logger.handlers:
 CATEGORIES=[("all","Tất cả"),("pho","Phở"),("banh-mi","Bánh mì"),("bun","Bún"),("com","Cơm"),("chay","Món chay"),("trang-mieng","Tráng miệng")]
 DEFAULT_CATEGORIES=[("pho","Phở"),("banh-mi","Bánh mì"),("bun","Bún"),("com","Cơm"),("chay","Món chay"),("trang-mieng","Tráng miệng")]
 SEED_MENU=[{'id': 'pho-dac-biet', 'name': 'Phở Đặc Biệt', 'category': 'pho', 'price': 890, 'desc': 'Phở kết hợp bò tái, nạm, gân, bò viên và nước dùng thơm đậm vị.', 'badge': 'Bán chạy'}, {'id': 'pho-bo-tai', 'name': 'Phở Bò Tái', 'category': 'pho', 'price': 790, 'desc': 'Phở bò tái với nước dùng trong, thơm và đậm đà.'}, {'id': 'pho-tai-chin', 'name': 'Phở Tái Chín', 'category': 'pho', 'price': 790, 'desc': 'Phở bò tái và nạm chín.'}, {'id': 'pho-bo-vien', 'name': 'Phở Bò Viên', 'category': 'pho', 'price': 790, 'desc': 'Phở bò viên với nước dùng bò truyền thống.'}, {'id': 'pho-chin-vien', 'name': 'Phở Chín Viên', 'category': 'pho', 'price': 790, 'desc': 'Phở nạm chín và bò viên.'}, {'id': 'pho-ga', 'name': 'Phở Gà', 'category': 'pho', 'price': 790, 'desc': 'Phở gà với nước dùng nhẹ, thơm.'}, {'id': 'pho-tom', 'name': 'Phở Tôm', 'category': 'pho', 'price': 890, 'desc': 'Phở tôm, lựa chọn nước dùng phù hợp.'}, {'id': 'banh-mi-dac-biet', 'name': 'Bánh Mì Đặc Biệt', 'category': 'banh-mi', 'price': 790, 'desc': 'Bánh mì thịt heo, giăm bông Việt Nam và pate.', 'badge': 'Signature'}, {'id': 'banh-mi-thit-nuong', 'name': 'Bánh Mì Thịt Nướng', 'category': 'banh-mi', 'price': 690, 'desc': 'Bánh mì thịt heo nướng thơm.'}, {'id': 'banh-mi-ga', 'name': 'Bánh Mì Gà', 'category': 'banh-mi', 'price': 690, 'desc': 'Bánh mì gà nướng.'}, {'id': 'banh-mi-xa-xiu', 'name': 'Bánh Mì Xá Xíu', 'category': 'banh-mi', 'price': 690, 'desc': 'Bánh mì thịt heo xá xíu.'}, {'id': 'banh-mi-ca-ri-ga', 'name': 'Bánh Mì Cà Ri Gà', 'category': 'banh-mi', 'price': 690, 'desc': 'Gà cà ri dùng kèm bánh mì Pháp.'}, {'id': 'banh-mi-bo-kho', 'name': 'Bánh Mì Bò Kho', 'category': 'banh-mi', 'price': 790, 'desc': 'Bò kho Việt Nam dùng kèm bánh mì.'}, {'id': 'bun-cha', 'name': 'Bún Chả Giò Thịt/Tôm/Gà Nướng', 'category': 'bun', 'price': 890, 'desc': 'Bún với rau sống, dưa chua, giá, chả giò và lựa chọn thịt nướng, tôm hoặc gà.', 'badge': 'Bán chạy'}, {'id': 'bun-thit-ga-tom', 'name': 'Bún Thịt/Gà/Tôm Nướng', 'category': 'bun', 'price': 890, 'desc': 'Bún rau sống, bạc hà, dưa leo, cà rốt ngâm và đậu phộng.'}, {'id': 'bun-thit-nem', 'name': 'Bún Thịt Nem Nướng', 'category': 'bun', 'price': 890, 'desc': 'Thịt nướng và nem nướng dùng với bún.'}, {'id': 'bun-bo-xao-xa-ot', 'name': 'Bún Bò/Gà/Tôm Xào Xả Ớt', 'category': 'bun', 'price': 890, 'desc': 'Bún với bò, gà hoặc tôm xào sả ớt.'}, {'id': 'hu-tieu-mi', 'name': 'Hủ Tiếu Mì', 'category': 'bun', 'price': 890, 'desc': 'Hủ tiếu mì hải sản hoặc trứng.'}, {'id': 'com-bo-xao-luc-lac', 'name': 'Cơm Bò Xào Lúc Lắc', 'category': 'com', 'price': 990, 'desc': 'Bò xào bông cải, ớt chuông, hành tây và cơm trắng.', 'badge': 'Signature'}, {'id': 'com-bo-ga-tom-xao', 'name': 'Cơm Bò/Gà/Tôm Xào Sả Ớt', 'category': 'com', 'price': 990, 'desc': 'Bò, gà hoặc tôm xào sả ớt với cơm trắng.'}, {'id': 'com-ga-thit-tom-nuong', 'name': 'Cơm Gà/Thịt/Tôm Nướng', 'category': 'com', 'price': 990, 'desc': 'Cơm trắng, salad và lựa chọn món nướng.'}, {'id': 'com-tay-cam', 'name': 'Cơm Tay Cầm', 'category': 'com', 'price': 1090, 'desc': 'Cơm chiên kết hợp tôm, gà, bò xào rau củ trong thố nóng.'}, {'id': 'che-ba-mau', 'name': 'Chè Ba Màu', 'category': 'trang-mieng', 'price': 490, 'desc': 'Chè ba màu với thạch và nước cốt dừa.'}, {'id': 'kem-chuoi', 'name': 'Kem Chuối/Chiên', 'category': 'trang-mieng', 'price': 490, 'desc': 'Chuối chiên dùng kèm kem.'}, {'id': 'yogurt', 'name': 'Yogurt', 'category': 'trang-mieng', 'price': 390, 'desc': 'Sữa chua Việt Nam.'}, {'id': 'tofu-cuon-chay', 'name': 'Tofu Cuốn', 'category': 'chay', 'price': 690, 'desc': 'Đậu hũ chiên cuốn bánh tráng, rau sống và sốt đậu phộng.'}, {'id': 'banh-mi-chay', 'name': 'Bánh Mì Chay', 'category': 'chay', 'price': 590, 'desc': 'Đậu hũ, nấm xào cuốn bánh mì cùng rau và sốt.'}, {'id': 'goi-chay', 'name': 'Gỏi Chay', 'category': 'chay', 'price': 690, 'desc': 'Gỏi bắp cải với đậu hũ xào và đậu phộng.'}, {'id': 'pho-chay', 'name': 'Phở Chay', 'category': 'chay', 'price': 790, 'desc': 'Phở rau củ, đậu hũ, giá, húng quế và jalapeño.'}, {'id': 'bun-xao-chay', 'name': 'Bún Xào Chay', 'category': 'chay', 'price': 690, 'desc': 'Đậu hũ, bắp cải, cà rốt, mì gạo, dưa leo, rau xà lách và bạc hà.'}, {'id': 'mi-xao-chay', 'name': 'Mì Xào Chay', 'category': 'chay', 'price': 690, 'desc': 'Mì trứng xào đậu hũ và rau củ.'}, {'id': 'com-tay-cam-chay', 'name': 'Cơm Tay Cầm Chay', 'category': 'chay', 'price': 790, 'desc': 'Rau củ và đậu hũ xào trong thố nóng.'}]
-DEFAULT_SETTINGS={"restaurant_name":"Phở & Bánh Mì K&K","tagline":"AUTHENTIC VIETNAMESE CUISINE","phone":"510.666.9966","address":"Cập nhật địa chỉ nhà hàng trong Admin","maps_url":"https://www.google.com/maps/search/?api=1&query=Pho+%26+Banh+Mi+K%26K+510.666.9966","google_review_url":"","hero_title":"Hương vị Việt, trọn vẹn trong từng món.","delivery_note":"Đặt món online nhanh chóng • Thanh toán khi nhận hàng (COD)","hero_image":"/static/menu-board.png","logo_image":"","online_order_enabled":"0","booking_enabled":"0","currency":"USD","currency_symbol":"$","location_eyebrow":"LOCATION","location_heading":"Địa điểm K&K","location_title":"Ghé K&K thưởng thức món ngon","location_description":"K&K phục vụ phở, bánh mì và các món Việt quen thuộc. Quý khách có thể xem thực đơn trước khi ghé nhà hàng và liên hệ trực tiếp với K&K nếu cần hỗ trợ.","location_main_image":"/static/menu-board.png","location_side_image_1":"/uploads/banh-mi-dac-biet_9353a2073b16.png","location_side_image_2":"/uploads/pho-dac-biet_d3d371fb4ca8.png"}
+DEFAULT_SETTINGS={"restaurant_name":"Phở & Bánh Mì K&K","tagline":"AUTHENTIC VIETNAMESE CUISINE","phone":"510.666.9966","address":"Cập nhật địa chỉ nhà hàng trong Admin","maps_url":"https://www.google.com/maps/search/?api=1&query=Pho+%26+Banh+Mi+K%26K+510.666.9966","google_review_url":"","hero_title":"Hương vị Việt, trọn vẹn trong từng món.","delivery_note":"Đặt món online nhanh chóng • Thanh toán khi nhận hàng (COD)","hero_image":"/static/menu-board.png","logo_image":"","online_order_enabled":"0","booking_enabled":"0","currency":"USD","currency_symbol":"$","location_eyebrow":"LOCATION","location_heading":"Địa điểm K&K","location_title":"Ghé K&K thưởng thức món ngon","location_description":"K&K phục vụ phở, bánh mì và các món Việt quen thuộc. Quý khách có thể xem thực đơn trước khi ghé nhà hàng và liên hệ trực tiếp với K&K nếu cần hỗ trợ.","location_main_image":"/static/menu-board.png","location_side_image_1":"/uploads/banh-mi-dac-biet_9353a2073b16.png","location_side_image_2":"/uploads/pho-dac-biet_d3d371fb4ca8.png","about_eyebrow":"ABOUT K&K","about_heading":"Ẩm thực Việt gần gũi, hiện đại.","about_description":"K&K phục vụ những món Việt quen thuộc với trải nghiệm hiện đại. Từ phở, bánh mì đến bún, cơm và món chay — thực đơn được tổ chức rõ ràng để khách dễ tìm và dễ gọi.","about_review_label":"⭐ Đánh giá Google","about_image":"/static/menu-board.png"}
 
 ORDER_STATUSES=["Mới","Đang chuẩn bị","Đang giao","Hoàn tất","Đã hủy"]
 BOOKING_STATUSES=["Mới","Đã xác nhận","Hoàn tất","Đã hủy"]
@@ -1630,77 +1630,77 @@ def settings_save():
     if not session.get("admin"):
         return jsonify(ok=False, message="Phiên đăng nhập đã hết hạn."), 401
 
-    # Lấy dữ liệu form trước khi xử lý file để hoạt động ổn định với AJAX FormData.
-    location_image_keys=("location_main_image","location_side_image_1","location_side_image_2")
-    values={k:(request.form.get(k) or "").strip() for k in DEFAULT_SETTINGS if k not in ("hero_image", "logo_image", "online_order_enabled", "booking_enabled", *location_image_keys)}
-    values["maps_url"]=(request.form.get("maps_url") or "").strip()
-    # Checkbox gửi kèm hidden value 0 để khi bỏ chọn vẫn lưu được trạng thái tắt.
-    # Dùng getlist() vì form có cả hidden input và checkbox cùng name.
-    order_values=request.form.getlist("online_order_enabled")
-    booking_values=request.form.getlist("booking_enabled")
-    values["online_order_enabled"]="1" if any(str(v).strip().lower() in ("1","true","yes","on") for v in order_values) else "0"
-    values["booking_enabled"]="1" if any(str(v).strip().lower() in ("1","true","yes","on") for v in booking_values) else "0"
-    current=request.form.get("hero_image") or DEFAULT_SETTINGS["hero_image"]
-    logo_current=request.form.get("logo_image") or DEFAULT_SETTINGS.get("logo_image","")
-    location_current={k:(request.form.get(k) or DEFAULT_SETTINGS[k]) for k in location_image_keys}
+    # Mỗi mục Cài đặt nhà hàng được gửi bằng một form riêng. Chỉ cập nhật
+    # những key thực sự có trong form để lưu độc lập, không làm ghi đè các mục khác.
+    location_image_keys=("location_main_image", "location_side_image_1", "location_side_image_2")
+    about_image_key="about_image"
+    image_setting_keys={"hero_image", "logo_image", about_image_key, *location_image_keys}
+    checkbox_keys={"online_order_enabled", "booking_enabled"}
+    current_settings=settings()
 
-    if not values["restaurant_name"]:
+    values={}
+    for k in DEFAULT_SETTINGS:
+        if k in image_setting_keys or k in checkbox_keys:
+            continue
+        if k in request.form:
+            values[k]=(request.form.get(k) or "").strip()
+
+    # Checkbox có hidden value 0 để lưu được cả trạng thái tắt.
+    for key in checkbox_keys:
+        if key in request.form:
+            submitted=request.form.getlist(key)
+            values[key]="1" if any(str(v).strip().lower() in ("1","true","yes","on") for v in submitted) else "0"
+
+    if "restaurant_name" in values and not values["restaurant_name"]:
         r=admin_result("Tên nhà hàng không được để trống.", refresh=False, status=400)
         return r if r is not None else redirect("/admin#settings")
-    if values["maps_url"] and not re.match(r"^https?://", values["maps_url"], re.I):
+    if "maps_url" in values and values["maps_url"] and not re.match(r"^https?://", values["maps_url"], re.I):
         r=admin_result("Google Maps URL phải bắt đầu bằng http:// hoặc https://.", refresh=False, status=400)
         return r if r is not None else redirect("/admin#settings")
-    if values["google_review_url"] and not re.match(r"^https?://", values["google_review_url"], re.I):
+    if "google_review_url" in values and values["google_review_url"] and not re.match(r"^https?://", values["google_review_url"], re.I):
         r=admin_result("Link đánh giá Google phải bắt đầu bằng http:// hoặc https://.", refresh=False, status=400)
         return r if r is not None else redirect("/admin#settings")
 
-    banner=request.files.get("hero_image_file")
-    logo=request.files.get("logo_image_file")
-    location_files={k:request.files.get(f"{k}_file") for k in location_image_keys}
-    old_banner=current
-    old_logo=logo_current
-    old_location=dict(location_current)
-    saved_files=[]
-    new_banner=current
-    new_logo=logo_current
-    new_location=dict(location_current)
-
-    # Validate tất cả file trước khi ghi DB để tránh trạng thái lưu dở dang.
+    # Chỉ xử lý ảnh khi form tương ứng có file được gửi lên.
+    file_specs=[
+        ("hero_image_file", "hero_image", "banner", "hero_banner"),
+        ("logo_image_file", "logo_image", "logo", "site_logo"),
+        ("about_image_file", "about_image", "about_image", "about_story"),
+        ("location_main_image_file", "location_main_image", "location_main_image", "location_main"),
+        ("location_side_image_1_file", "location_side_image_1", "location_side_image_1", "location_side_1"),
+        ("location_side_image_2_file", "location_side_image_2", "location_side_image_2", "location_side_2"),
+    ]
     uploads=[]
-    for file_obj, label in ((banner, "banner"), (logo, "logo"), *[(location_files[k], k) for k in location_image_keys]):
+    for file_field, setting_key, label, prefix in file_specs:
+        file_obj=request.files.get(file_field)
         if not file_obj or not file_obj.filename:
             continue
         original=secure_filename(file_obj.filename)
         ext=original.rsplit(".",1)[-1].lower() if "." in original else ""
         if ext not in IMAGE_EXTENSIONS:
-            label_names={"banner":"Ảnh banner","logo":"Ảnh logo","location_main_image":"Ảnh chính Địa điểm","location_side_image_1":"Ảnh phụ 1 Địa điểm","location_side_image_2":"Ảnh phụ 2 Địa điểm"}
-            message=label_names.get(label,"Ảnh")
-            r=admin_result(f"{message} phải có định dạng JPG, JPEG, PNG hoặc WEBP.", refresh=False, status=400)
+            label_names={
+                "banner":"Ảnh banner", "logo":"Ảnh logo", "about_image":"Ảnh mục Giới thiệu K&K",
+                "location_main_image":"Ảnh chính Địa điểm", "location_side_image_1":"Ảnh phụ 1 Địa điểm",
+                "location_side_image_2":"Ảnh phụ 2 Địa điểm"
+            }
+            r=admin_result(f"{label_names.get(label,'Ảnh')} phải có định dạng JPG, JPEG, PNG hoặc WEBP.", refresh=False, status=400)
             return r if r is not None else redirect("/admin#settings")
-        prefix_map={"banner":"hero_banner","logo":"site_logo","location_main_image":"location_main","location_side_image_1":"location_side_1","location_side_image_2":"location_side_2"}
-        prefix=prefix_map.get(label,label)
         filename=f"{prefix}_{secrets.token_hex(8)}.{ext}"
         path=os.path.join(UP, filename)
-        uploads.append((file_obj, label, path, "/uploads/"+filename))
+        uploads.append((file_obj, setting_key, path, "/uploads/"+filename))
 
+    saved_files=[]
+    changed_images=[]
     try:
-        for file_obj, label, path, public_path in uploads:
+        for file_obj, setting_key, path, public_path in uploads:
             ext=path.rsplit(".",1)[-1].lower()
             save_validated_image(file_obj, path, ext)
             saved_files.append(path)
-            if label=="banner":
-                new_banner=public_path
-            elif label=="logo":
-                new_logo=public_path
-            elif label in new_location:
-                new_location[label]=public_path
+            changed_images.append((setting_key, current_settings.get(setting_key) or DEFAULT_SETTINGS.get(setting_key,""), public_path))
+            values[setting_key]=public_path
 
         c=conn()
         for k,v in values.items():
-            c.execute("INSERT OR REPLACE INTO settings VALUES(?,?)", (k,v))
-        c.execute("INSERT OR REPLACE INTO settings VALUES(?,?)", ("hero_image",new_banner))
-        c.execute("INSERT OR REPLACE INTO settings VALUES(?,?)", ("logo_image",new_logo))
-        for k,v in new_location.items():
             c.execute("INSERT OR REPLACE INTO settings VALUES(?,?)", (k,v))
         c.commit()
         c.close()
@@ -1715,8 +1715,8 @@ def settings_save():
         r=admin_result("Không thể lưu cài đặt hoặc hình ảnh. Vui lòng thử lại.", refresh=False, status=500)
         return r if r is not None else redirect("/admin#settings")
 
-    # Chỉ xóa file cũ sau khi DB đã commit thành công.
-    for old_path, new_path in [(old_banner,new_banner),(old_logo,new_logo), *[(old_location[k],new_location[k]) for k in location_image_keys]]:
+    # Chỉ xóa ảnh cũ sau khi DB đã commit thành công và chỉ với ảnh vừa được thay.
+    for setting_key, old_path, new_path in changed_images:
         if old_path and old_path.startswith("/uploads/") and old_path != new_path:
             try:
                 old_file=os.path.join(UP, os.path.basename(old_path))
@@ -1725,10 +1725,12 @@ def settings_save():
             except OSError:
                 pass
 
-    audit_log("UPDATE","settings","restaurant",{"uploaded_banner":bool(uploads and any(x[1]=="banner" for x in uploads)),
-                                               "uploaded_logo":bool(uploads and any(x[1]=="logo" for x in uploads)),
-                                               "uploaded_location_images":bool(uploads and any(x[1] in location_image_keys for x in uploads))})
-    r=admin_result("Đã lưu thông tin nhà hàng, logo, banner và Địa điểm trang chủ.")
+    saved_keys=list(values.keys())
+    audit_log("UPDATE","settings","restaurant",{
+        "keys":saved_keys,
+        "uploaded_images":[key for key,_,_ in changed_images]
+    })
+    r=admin_result("Đã lưu mục cài đặt.", refresh=True)
     return r if r is not None else redirect("/admin#settings")
 
 

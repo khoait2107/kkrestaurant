@@ -57,3 +57,5 @@ Traceback (most recent call last):
     return request.remote_addr or "unknown"
            ^^^^^^^^^^^^^^^^^^^
 AttributeError: 'Req' object has no attribute 'remote_addr'
+2026-08-30 11:28:28,431 INFO Database backup created: D:\BELUYEN\kkrestaurant_settings_independent_save_fixed\backups\kk_2026-08-30_11-28-28.db
+2026-08-30 11:28:28,446 INFO Database backup created: D:\BELUYEN\kkrestaurant_settings_independent_save_fixed\backups\kk_2026-08-30_11-28-28.db

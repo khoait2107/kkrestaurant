@@ -196,68 +196,103 @@
 </section>
 <section id="settings" class="admin-section">
 <div class="admin-section-heading"><div><h2>Cài đặt nhà hàng</h2><p class="muted">Thông tin nhà hàng, nội dung Hero và hình banner hiển thị ngoài trang chủ.</p></div></div>
-<form class="settings settings-panel" method="post" action="/admin/settings" enctype="multipart/form-data" data-refresh-hash="#settings">
-<div class="settings-grid">
-{% for k,label in [('restaurant_name','Tên nhà hàng'),('tagline','Tagline'),('phone','Điện thoại'),('address','Địa chỉ chính xác'),('maps_url','Google Maps URL'),('google_review_url','Link đánh giá Google'),('hero_title','Tiêu đề Hero'),('delivery_note','Mô tả ngắn trên Hero')] %}
-<div class="form-field {% if k in ['address','maps_url','google_review_url','hero_title','delivery_note'] %}wide{% endif %}">
-  <label for="setting-{{k}}">{{label}}</label>
-  <input id="setting-{{k}}" name="{{k}}" value="{{site_settings.get(k, "")}}" placeholder="{{label}}" {% if k in ['maps_url','google_review_url'] %}type="url"{% endif %}>
-  {% if k == 'google_review_url' %}<small class="muted">Dán link mở trực tiếp màn hình <strong>Viết bài đánh giá</strong> trên Google. Có thể thay đổi bất cứ lúc nào mà không cần sửa code.</small>{% endif %}{% if k == 'delivery_note' %}<small class="muted">Nội dung này hiển thị ngay dưới tiêu đề Hero trên Trang Chủ.</small>{% endif %}
-</div>
-{% endfor %}
-</div>
-<div class="banner-setting logo-setting">
-  <div class="banner-setting-copy"><h3>🏷️ Logo trang chủ</h3><p class="muted">Chọn ảnh JPG, JPEG, PNG hoặc WEBP. <strong>Kích thước khuyến nghị: 380 × 96 px</strong> (tỷ lệ khoảng 4:1). Logo mới sẽ thay logo K&amp;K ở thanh đầu trang và chân trang.</p></div>
-  <input type="hidden" name="logo_image" value="{{site_settings.get('logo_image') or ''}}">
-  <label class="banner-upload"><span>Chọn ảnh logo mới</span><input id="logoImageFile" type="file" name="logo_image_file" accept="image/jpeg,image/png,image/webp"></label>
-  <div class="banner-preview-wrap logo-preview-wrap"><div class="banner-preview logo-preview" id="logoPreview"><div class="logo-preview-inner">{% if site_settings.get('logo_image') %}<img src="{{site_settings.get('logo_image')}}" alt="Logo hiện tại">{% else %}<b>K<span>&amp;</span>K</b><small>PHỞ &amp; BÁNH MÌ</small>{% endif %}</div></div><div class="banner-preview-meta"><b>Logo hiện tại</b><span class="muted">{{site_settings.get('logo_image') or 'Đang dùng logo chữ K&amp;K mặc định'}}</span></div></div>
-</div>
-<div class="banner-setting">
-  <div class="banner-setting-copy"><h3>🖼️ Banner trang chủ</h3><p class="muted">Chọn ảnh JPG, JPEG, PNG hoặc WEBP. <strong>Kích thước khuyến nghị: 2048 × 842 px</strong> (tỷ lệ khoảng 2,43:1) để hiển thị đẹp trên khu vực Hero trang chủ. Ảnh mới sẽ thay banner Hero hiện tại trên trang chủ.</p></div>
-  <input type="hidden" name="hero_image" value="{{site_settings.get('hero_image') or '/static/menu-board.png'}}">
-  <label class="banner-upload"><span>Chọn ảnh banner mới</span><input id="heroImageFile" type="file" name="hero_image_file" accept="image/jpeg,image/png,image/webp"></label>
-  <div class="banner-preview-wrap"><div class="banner-preview" id="heroBannerPreview"><img src="{{site_settings.get('hero_image') or '/static/menu-board.png'}}" alt="Banner trang chủ hiện tại"></div><div class="banner-preview-meta"><b>Banner hiện tại</b><span class="muted">{{site_settings.get('hero_image') or '/static/menu-board.png'}}</span></div></div>
-</div>
-<div class="location-admin-setting banner-setting">
-  <div class="banner-setting-copy"><h3>📍 Địa điểm trên Trang Chủ</h3><p class="muted">Cấu hình nội dung và 3 hình ảnh của mục <strong>Địa điểm K&amp;K</strong>. Địa chỉ, điện thoại và Google Maps ở phía trên vẫn được dùng chung cho mục này.</p></div>
-  <div class="settings-grid location-copy-grid">
-    {% for k,label in [('location_eyebrow','Nhãn nhỏ'),('location_heading','Tiêu đề mục Địa điểm'),('location_title','Tiêu đề nội dung'),('location_description','Mô tả chi tiết')] %}
-    <div class="form-field {% if k in ['location_title','location_description'] %}wide{% endif %}">
-      <label for="setting-{{k}}">{{label}}</label>
-      {% if k in ['location_description'] %}<textarea id="setting-{{k}}" name="{{k}}" rows="3" placeholder="{{label}}">{{site_settings.get(k, '')}}</textarea>{% else %}<input id="setting-{{k}}" name="{{k}}" value="{{site_settings.get(k, '')}}" placeholder="{{label}}">{% endif %}
+<div class="settings-sections">
+  <form class="settings settings-panel settings-card" method="post" action="/admin/settings" enctype="multipart/form-data" data-refresh-hash="#settings">
+    <div class="settings-card-head"><div><h3>🏪 Thông tin nhà hàng</h3><p class="muted">Thông tin cơ bản được sử dụng trên website.</p></div></div>
+    <div class="settings-grid">
+      {% for k,label in [('restaurant_name','Tên nhà hàng'),('tagline','Tagline'),('phone','Điện thoại'),('address','Địa chỉ chính xác'),('maps_url','Google Maps URL')] %}
+      <div class="form-field {% if k in ['address','maps_url'] %}wide{% endif %}">
+        <label for="setting-{{k}}">{{label}}</label>
+        <input id="setting-{{k}}" name="{{k}}" value="{{site_settings.get(k, '')}}" placeholder="{{label}}" {% if k == 'maps_url' %}type="url"{% endif %}>
+      </div>
+      {% endfor %}
     </div>
-    {% endfor %}
-  </div>
-  <div class="location-image-admin-grid">
-    {% for k,label,help in [('location_main_image','Ảnh chính','Khuyến nghị ảnh ngang, rõ mặt tiền hoặc không gian nhà hàng.'),('location_side_image_1','Ảnh phụ 1','Ảnh món ăn, không gian hoặc chi tiết thương hiệu.'),('location_side_image_2','Ảnh phụ 2','Ảnh món ăn, không gian hoặc chi tiết thương hiệu.')] %}
-    <div class="location-image-admin-card">
-      <div class="location-image-admin-head"><strong>{{label}}</strong><span class="muted">{{help}}</span></div>
-      <input type="hidden" name="{{k}}" value="{{site_settings.get(k) or ''}}">
-      <label class="banner-upload"><span>Chọn ảnh mới</span><input id="{{k}}_file" type="file" name="{{k}}_file" accept="image/jpeg,image/png,image/webp"></label>
-      <div class="location-image-preview" id="{{k}}_preview"><img src="{{site_settings.get(k) or '/static/menu-board.png'}}" alt="{{label}} hiện tại"></div>
-      <small class="muted location-image-path">{{site_settings.get(k) or 'Chưa có ảnh'}}</small>
+    <div class="settings-card-actions"><button type="submit" class="btn green">✓ Lưu thông tin</button></div>
+  </form>
+
+  <form class="settings settings-panel settings-card" method="post" action="/admin/settings" data-refresh-hash="#settings">
+    <div class="settings-card-head"><div><h3>⭐ Đánh giá Google</h3><p class="muted">Dán Review Link của Google Business để khách mở thẳng màn hình viết đánh giá.</p></div></div>
+    <div class="form-field">
+      <label for="setting-google_review_url">Link đánh giá Google</label>
+      <input id="setting-google_review_url" name="google_review_url" value="{{site_settings.get('google_review_url', '')}}" placeholder="https://..." type="url">
+      <small class="muted">Link này được dùng cho nút “Đánh giá Google” trên website.</small>
     </div>
-    {% endfor %}
-  </div>
-</div>
-<div class="settings-order-control" style="margin-top:20px;padding:18px 20px;border:1px solid #e5e7eb;border-radius:14px;background:#fafafa">
-  <div style="margin-bottom:16px">
-    <h3 style="margin:0 0 5px">🛒 Tính năng trực tuyến</h3>
-    <p class="muted" style="margin:0;line-height:1.5">Bật/tắt độc lập từng tính năng. Bạn có thể cho khách <strong>Đặt bàn</strong> mà không cần bật đặt hàng online, hoặc chỉ bật <strong>Đặt hàng Online + Theo dõi đơn</strong>.</p>
-  </div>
-  <div class="online-feature-grid">
-    <label style="display:flex;align-items:center;gap:12px;cursor:pointer;font-weight:700;padding:14px 16px;border:1px solid #e5e7eb;border-radius:12px;background:#fff">
-      <input type="hidden" name="booking_enabled" value="0">
-      <input type="checkbox" name="booking_enabled" value="1" {% if site_settings.get('booking_enabled','0') in ['1','true','yes','on'] %}checked{% endif %} style="width:20px;height:20px;accent-color:#16a34a">
-      <span>Đặt bàn</span>
-    </label>
-    <label style="display:flex;align-items:center;gap:12px;cursor:pointer;font-weight:700;padding:14px 16px;border:1px solid #e5e7eb;border-radius:12px;background:#fff">
-      <input type="hidden" name="online_order_enabled" value="0">
-      <input type="checkbox" name="online_order_enabled" value="1" {% if site_settings.get('online_order_enabled','0') in ['1','true','yes','on'] %}checked{% endif %} style="width:20px;height:20px;accent-color:#16a34a">
-      <span>Đặt hàng Online (Theo dõi đơn)</span>
-    </label>
-  </div>
-</div>
-<div class="form-actions"><button class="btn green">✓ Lưu cài đặt</button></div></form></section>
+    <div class="settings-card-actions"><button type="submit" class="btn green">✓ Lưu đánh giá Google</button></div>
+  </form>
+
+  <form class="settings settings-panel settings-card" method="post" action="/admin/settings" enctype="multipart/form-data" data-refresh-hash="#settings">
+    <div class="settings-card-head"><div><h3>🎯 Nội dung Hero trang chủ</h3><p class="muted">Chỉnh tiêu đề và mô tả hiển thị ở phần đầu Trang Chủ.</p></div></div>
+    <div class="settings-grid">
+      <div class="form-field wide"><label for="setting-hero_title">Tiêu đề Hero</label><input id="setting-hero_title" name="hero_title" value="{{site_settings.get('hero_title','')}}" placeholder="Tiêu đề Hero"></div>
+      <div class="form-field wide"><label for="setting-delivery_note">Mô tả ngắn trên Hero</label><textarea id="setting-delivery_note" name="delivery_note" rows="3" placeholder="Mô tả ngắn trên Hero">{{site_settings.get('delivery_note','')}}</textarea></div>
+    </div>
+    <div class="settings-card-actions"><button type="submit" class="btn green">✓ Lưu nội dung Hero</button></div>
+  </form>
+
+  <form class="settings settings-panel settings-card" method="post" action="/admin/settings" enctype="multipart/form-data" data-refresh-hash="#settings">
+    <div class="settings-card-head"><div><h3>🏷️ Logo trang chủ</h3><p class="muted">JPG, JPEG, PNG hoặc WEBP. Khuyến nghị 380 × 96 px.</p></div></div>
+    <label class="banner-upload"><span>Chọn ảnh logo mới</span><input id="logoImageFile" type="file" name="logo_image_file" accept="image/jpeg,image/png,image/webp"></label>
+    <div class="banner-preview-wrap logo-preview-wrap"><div class="banner-preview logo-preview" id="logoPreview"><div class="logo-preview-inner">{% if site_settings.get('logo_image') %}<img src="{{site_settings.get('logo_image')}}" alt="Logo hiện tại">{% else %}<b>K<span>&amp;</span>K</b><small>PHỞ &amp; BÁNH MÌ</small>{% endif %}</div></div><div class="banner-preview-meta"><b>Logo hiện tại</b><span class="muted">{{site_settings.get('logo_image') or 'Đang dùng logo chữ K&amp;K mặc định'}}</span></div></div>
+    <div class="settings-card-actions"><button type="submit" class="btn green">✓ Lưu logo</button></div>
+  </form>
+
+  <form class="settings settings-panel settings-card" method="post" action="/admin/settings" enctype="multipart/form-data" data-refresh-hash="#settings">
+    <div class="settings-card-head"><div><h3>🖼️ Banner trang chủ</h3><p class="muted">JPG, JPEG, PNG hoặc WEBP. Khuyến nghị 2048 × 842 px.</p></div></div>
+    <label class="banner-upload"><span>Chọn ảnh banner mới</span><input id="heroImageFile" type="file" name="hero_image_file" accept="image/jpeg,image/png,image/webp"></label>
+    <div class="banner-preview-wrap"><div class="banner-preview" id="heroBannerPreview"><img src="{{site_settings.get('hero_image') or '/static/menu-board.png'}}" alt="Banner trang chủ hiện tại"></div><div class="banner-preview-meta"><b>Banner hiện tại</b><span class="muted">{{site_settings.get('hero_image') or '/static/menu-board.png'}}</span></div></div>
+    <div class="settings-card-actions"><button type="submit" class="btn green">✓ Lưu banner</button></div>
+  </form>
+
+  <form class="settings settings-panel settings-card" method="post" action="/admin/settings" enctype="multipart/form-data" data-refresh-hash="#settings">
+    <div class="settings-card-head"><div><h3>🏠 Giới thiệu K&amp;K trên Trang Chủ</h3><p class="muted">Cấu hình nội dung mục “Ẩm thực Việt gần gũi, hiện đại.” và hình ảnh.</p></div></div>
+    <div class="settings-grid location-copy-grid">
+      {% for k,label in [('about_eyebrow','Nhãn nhỏ'),('about_heading','Tiêu đề'),('about_description','Mô tả'),('about_review_label','Chữ trên nút đánh giá')] %}
+      <div class="form-field {% if k == 'about_description' %}wide{% endif %}">
+        <label for="setting-{{k}}">{{label}}</label>
+        {% if k == 'about_description' %}<textarea id="setting-{{k}}" name="{{k}}" rows="4" placeholder="{{label}}">{{site_settings.get(k, '')}}</textarea>{% else %}<input id="setting-{{k}}" name="{{k}}" value="{{site_settings.get(k, '')}}" placeholder="{{label}}">{% endif %}
+      </div>
+      {% endfor %}
+    </div>
+    <div class="about-image-admin-card">
+      <div class="location-image-admin-head"><strong>🖼️ Hình ảnh mục Giới thiệu</strong><span class="muted">Khuyến nghị ảnh ngang, chất lượng tốt.</span></div>
+      <label class="banner-upload"><span>Chọn ảnh mới</span><input id="aboutImageFile" type="file" name="about_image_file" accept="image/jpeg,image/png,image/webp"></label>
+      <div class="location-image-preview about-image-preview"><img id="aboutImagePreview" src="{{site_settings.get('about_image') or '/static/menu-board.png'}}" alt="Hình ảnh Giới thiệu K&amp;K hiện tại"></div>
+      <small class="muted location-image-path">{{site_settings.get('about_image') or '/static/menu-board.png'}}</small>
+    </div>
+    <div class="settings-card-actions"><button type="submit" class="btn green">✓ Lưu Giới thiệu K&amp;K</button></div>
+  </form>
+
+  <form class="settings settings-panel settings-card" method="post" action="/admin/settings" enctype="multipart/form-data" data-refresh-hash="#settings">
+    <div class="settings-card-head"><div><h3>📍 Địa điểm trên Trang Chủ</h3><p class="muted">Cấu hình nội dung và 3 hình ảnh của mục Địa điểm K&amp;K.</p></div></div>
+    <div class="settings-grid location-copy-grid">
+      {% for k,label in [('location_eyebrow','Nhãn nhỏ'),('location_heading','Tiêu đề mục Địa điểm'),('location_title','Tiêu đề nội dung'),('location_description','Mô tả chi tiết')] %}
+      <div class="form-field {% if k in ['location_title','location_description'] %}wide{% endif %}">
+        <label for="setting-{{k}}">{{label}}</label>
+        {% if k == 'location_description' %}<textarea id="setting-{{k}}" name="{{k}}" rows="3" placeholder="{{label}}">{{site_settings.get(k, '')}}</textarea>{% else %}<input id="setting-{{k}}" name="{{k}}" value="{{site_settings.get(k, '')}}" placeholder="{{label}}">{% endif %}
+      </div>
+      {% endfor %}
+    </div>
+    <div class="location-image-admin-grid">
+      {% for k,label,help in [('location_main_image','Ảnh chính','Khuyến nghị ảnh ngang, rõ mặt tiền hoặc không gian nhà hàng.'),('location_side_image_1','Ảnh phụ 1','Ảnh món ăn, không gian hoặc chi tiết thương hiệu.'),('location_side_image_2','Ảnh phụ 2','Ảnh món ăn, không gian hoặc chi tiết thương hiệu.')] %}
+      <div class="location-image-admin-card">
+        <div class="location-image-admin-head"><strong>{{label}}</strong><span class="muted">{{help}}</span></div>
+        <label class="banner-upload"><span>Chọn ảnh mới</span><input id="{{k}}_file" type="file" name="{{k}}_file" accept="image/jpeg,image/png,image/webp"></label>
+        <div class="location-image-preview" id="{{k}}_preview"><img src="{{site_settings.get(k) or '/static/menu-board.png'}}" alt="{{label}} hiện tại"></div>
+        <small class="muted location-image-path">{{site_settings.get(k) or 'Chưa có ảnh'}}</small>
+      </div>
+      {% endfor %}
+    </div>
+    <div class="settings-card-actions"><button type="submit" class="btn green">✓ Lưu Địa điểm</button></div>
+  </form>
+
+  <form class="settings settings-panel settings-card" method="post" action="/admin/settings" data-refresh-hash="#settings">
+    <div class="settings-card-head"><div><h3>🛒 Tính năng trực tuyến</h3><p class="muted">Bật/tắt độc lập Đặt bàn và Đặt hàng Online (Theo dõi đơn).</p></div></div>
+    <div class="online-feature-grid">
+      <label class="online-feature-option"><input type="hidden" name="booking_enabled" value="0"><input type="checkbox" name="booking_enabled" value="1" {% if site_settings.get('booking_enabled','0') in ['1','true','yes','on'] %}checked{% endif %}><span>Đặt bàn</span></label>
+      <label class="online-feature-option"><input type="hidden" name="online_order_enabled" value="0"><input type="checkbox" name="online_order_enabled" value="1" {% if site_settings.get('online_order_enabled','0') in ['1','true','yes','on'] %}checked{% endif %}><span>Đặt hàng Online (Theo dõi đơn)</span></label>
+    </div>
+    <div class="settings-card-actions"><button type="submit" class="btn green">✓ Lưu tính năng trực tuyến</button></div>
+  </form>
+</div></section>
 </main>
 </div></div></section></div>
